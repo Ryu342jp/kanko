@@ -1,77 +1,92 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const stamps = document.querySelectorAll('.stamp');
-    const message = document.getElementById('message');
-    const targetLat = 32.744062825355094;
-    const targetLon = 129.8781280094008;
-    const maxDistance = 500; // メートル
+const customStampIDs = [11501, 21802, 36903, 45804, 50085];
 
-    stamps.forEach(stamp => {
-        stamp.addEventListener('click', () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    position => checkLocationAndStamp(position, stamp),
-                    error => {
-                        console.error('位置情報の取得に失敗しました:', error);
-                        message.textContent = '位置情報の取得に失敗しました。ブラウザの設定をご確認ください。';
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 5000,
-                        maximumAge: 0
-                    }
-                );
+// 指定座標
+const targetLat = 32.744062825355094;
+const targetLon = 129.8781280094008;
+const maxDistance = 500; // メートル単位
+
+function initializeStamps() {
+    updateStamps();
+}
+
+function updateStamps() {
+    const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
+    document.querySelectorAll('.stamp').forEach((stamp) => {
+        const stampId = parseInt(stamp.dataset.id);
+        if (stamps.includes(stampId)) {
+            stamp.classList.add('collected');
+            const img = stamp.querySelector('.stamp-image');
+            if (img.complete) {
+                stamp.classList.add('has-image');
             } else {
-                message.textContent = 'お使いのブラウザは位置情報をサポートしていません。';
+                img.onload = () => stamp.classList.add('has-image');
+                img.onerror = () => stamp.classList.remove('has-image');
             }
-        });
+        }
     });
+}
 
-    function checkLocationAndStamp(position, stamp) {
-        try {
-            const distance = calculateDistance(
-                position.coords.latitude,
-                position.coords.longitude,
-                targetLat,
-                targetLon
-            );
+function collectStamp(id) {
+    const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
+    if (!stamps.includes(id)) {
+        stamps.push(id);
+        localStorage.setItem('stamps', JSON.stringify(stamps));
+        updateStamps();
+        const stampIndex = customStampIDs.indexOf(id) + 1;
+        alert(`スタンプ${stampIndex}（ID: ${id}）を獲得しました！`);
+    } else {
+        alert('このスタンプは既に獲得済みです。');
+    }
+}
 
+function checkLocation() {
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const userLat = position.coords.latitude;
+            const userLon = position.coords.longitude;
+            
+            const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
+            
             if (distance <= maxDistance) {
-                stampCollected(stamp);
+                const urlParams = new URLSearchParams(window.location.search);
+                const stampId = urlParams.get('id');
+                if (stampId && customStampIDs.includes(parseInt(stampId))) {
+                    collectStamp(parseInt(stampId));
+                } else {
+                    alert("有効なスタンプIDが指定されていません。");
+                }
             } else {
-                message.textContent = `指定された場所に近づいてください（現在の距離: ${Math.round(distance)}m）`;
+                alert("指定された範囲内にいません。");
             }
-        } catch (error) {
-            console.error('位置情報の計算中にエラーが発生しました:', error);
-            message.textContent = '位置情報の取得に問題が発生しました。再度お試しください。';
-        }
+        }, function(error) {
+            alert("位置情報の取得に失敗しました: " + error.message);
+        });
+    } else {
+        alert("お使いのブラウザは位置情報をサポートしていません。");
     }
+}
 
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371e3; // 地球の半径（メートル）
-        const φ1 = lat1 * Math.PI / 180;
-        const φ2 = lat2 * Math.PI / 180;
-        const Δφ = (lat2 - lat1) * Math.PI / 180;
-        const Δλ = (lon2 - lon1) * Math.PI / 180;
+// 2点間の距離をメートル単位で計算する関数
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371e3; // 地球の半径（メートル）
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
 
-        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                  Math.cos(φ1) * Math.cos(φ2) *
-                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-        return R * c;
-    }
+    return R * c; // メートル単位の距離
+}
 
-    function stampCollected(stamp) {
-        if (!stamp.classList.contains('stamped')) {
-            stamp.classList.add('stamped');
-            const stampId = stamp.getAttribute('data-id');
-            // 画像がある場合はコメントを外して使用してください
-            // stamp.style.backgroundImage = `url('stamp_${stampId}.png')`;
-            // stamp.style.backgroundSize = 'cover';
-            // stamp.textContent = '';
-            message.textContent = `スタンプ ${stamp.textContent} を獲得しました！`;
-        } else {
-            message.textContent = 'このスタンプは既に獲得済みです。';
-        }
-    }
-});
+window.onload = initializeStamps;
+
+// URLパラメータからスタンプIDを取得して収集
+const urlParams = new URLSearchParams(window.location.search);
+const stampId = urlParams.get('id');
+if (stampId) {
+    checkLocation();
+}
