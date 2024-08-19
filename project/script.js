@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const stamps = document.querySelectorAll('.stamp');
     const message = document.getElementById('message');
-    const targetLat = 32.744062825355094;
-    const targetLon = 129.8781280094008;
+    const targetLat = 32.80867009224347;
+    const targetLon = 129.8743798718864;
     const maxDistance = 500; // メートル
 
     stamps.forEach(stamp => {
