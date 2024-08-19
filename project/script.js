@@ -21,19 +21,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function checkLocationAndStamp(position, stamp) {
-        const distance = calculateDistance(
-            position.coords.latitude,
-            position.coords.longitude,
-            targetLat,
-            targetLon
-        );
+        try {
+            const distance = calculateDistance(
+                position.coords.latitude,
+                position.coords.longitude,
+                targetLat,
+                targetLon
+            );
 
-        if (distance <= maxDistance) {
-            stampCollected(stamp);
-        } else {
-            message.textContent = 'スタンプを押すには指定された場所に近づいてください。';
+            if (distance <= maxDistance) {
+                stampCollected(stamp);
+            } else {
+                message.textContent = '指定された場所に近づいてください（現在の距離: ' + Math.round(distance) + 'm）';
+            }
+        } catch (error) {
+            console.error('位置情報の計算中にエラーが発生しました:', error);
+            message.textContent = '位置情報の取得に問題が発生しました。再度お試しください。';
         }
     }
+
+    navigator.geolocation.getCurrentPosition(
+        position => checkLocationAndStamp(position, stamp),
+        error => {
+            console.error('位置情報の取得に失敗しました:', error);
+            message.textContent = '位置情報の取得に失敗しました。ブラウザの設定をご確認ください。';
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        }
+    );
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371e3; // 地球の半径（メートル）
