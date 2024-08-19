@@ -8,7 +8,8 @@ function initializeStamps() {
     for (let i = 0; i < totalStamps; i++) {
         const stamp = document.createElement('div');
         stamp.className = 'stamp';
-        stamp.textContent = customStampIDs[i];
+        stamp.textContent = i + 1; // 表示は1から始まる連番
+        stamp.dataset.id = customStampIDs[i]; // データ属性にカスタムIDを設定
         stampContainer.appendChild(stamp);
     }
     updateStamps();
@@ -16,8 +17,8 @@ function initializeStamps() {
 
 function updateStamps() {
     const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
-    document.querySelectorAll('.stamp').forEach((stamp, index) => {
-        if (stamps.includes(customStampIDs[index])) {
+    document.querySelectorAll('.stamp').forEach((stamp) => {
+        if (stamps.includes(parseInt(stamp.dataset.id))) {
             stamp.classList.add('collected');
         }
     });
@@ -29,7 +30,8 @@ function collectStamp(id) {
         stamps.push(id);
         localStorage.setItem('stamps', JSON.stringify(stamps));
         updateStamps();
-        alert(`スタンプ${id}を獲得しました`);
+        const stampIndex = customStampIDs.indexOf(id) + 1;
+        alert(`スタンプ${stampIndex}（ID: ${id}）を獲得しました！`);
     } else {
         alert('このスタンプは既に獲得済みです。');
     }
