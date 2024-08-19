@@ -3,21 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>スタンプラリー</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>デジタルスタンプラリー</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <h1>スタンプラリー</h1>
-        <div id="stamps">
-            <div class="stamp" data-id="1012">①</div>
-            <div class="stamp" data-id="2025">②</div>
-            <div class="stamp" data-id="3044">③</div>
-            <div class="stamp" data-id="4058">④</div>
-            <div class="stamp" data-id="5089">⑤</div>
+    <h1>デジタルスタンプラリー</h1>
+    <div id="stamp-container">
+        <div class="stamp" data-id="11501">
+            <span class="stamp-number">1</span>
+            <img src="st1.png" alt="スタンプ1" class="stamp-image">
         </div>
-        <div id="message">スタンプを押してください</div>
+        <div class="stamp" data-id="21802">
+            <span class="stamp-number">2</span>
+            <img src="st2.png" alt="スタンプ2" class="stamp-image">
+        </div>
+        <div class="stamp" data-id="36903">
+            <span class="stamp-number">3</span>
+            <img src="st3.png" alt="スタンプ3" class="stamp-image">
+        </div>
+        <div class="stamp" data-id="45804">
+            <span class="stamp-number">4</span>
+            <img src="st4.png" alt="スタンプ4" class="stamp-image">
+        </div>
+        <div class="stamp" data-id="50085">
+            <span class="stamp-number">5</span>
+            <img src="st5.png" alt="スタンプ5" class="stamp-image">
+        </div>
     </div>
+    <button onclick="checkLocation()">現在位置をチェック</button>
     <script src="script.js"></script>
 </body>
 </html>
