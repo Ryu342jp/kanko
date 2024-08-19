@@ -1,34 +1,81 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
-
 body {
     font-family: 'Noto Sans JP', sans-serif;
-    background-image: url('path/to/background-pattern.png');
-    background-repeat: repeat;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
 }
 
 #app {
     max-width: 800px;
-    margin: 2rem auto;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 2rem;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+#stamps {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 .stamp {
+    width: 120px;
+    height: 120px;
+    border: 4px solid #333;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 60px;
+    margin: 15px;
+    cursor: pointer;
+    position: relative;
     transition: all 0.3s ease;
+    background-color: #fff;
+    color: #333;
 }
 
 .stamp:hover {
     transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.stamp::before {
+    content: "押す";
+    position: absolute;
+    bottom: -30px;
+    font-size: 16px;
+    color: #666;
 }
 
 .stamp.stamped {
+    background-color: #4CAF50;
+    color: white;
     animation: stampEffect 0.5s ease-out;
+}
+
+.stamp.stamped::before {
+    content: "完了";
+    color: #4CAF50;
 }
 
 @keyframes stampEffect {
     0% { transform: scale(1); }
     50% { transform: scale(1.2); }
     100% { transform: scale(1); }
+}
+
+#message {
+    text-align: center;
+    margin-top: 30px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
 }
