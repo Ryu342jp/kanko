@@ -1,59 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f0f0f0;
+    font-family: 'Noto Sans JP', sans-serif;
+    background-image: url('path/to/background-pattern.png');
+    background-repeat: repeat;
 }
 
 #app {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-h1 {
-    text-align: center;
-}
-
-#stamps {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    max-width: 800px;
+    margin: 2rem auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .stamp {
-    width: 80px;
-    height: 80px;
-    border: 2px solid #333;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    margin: 10px;
-    cursor: pointer;
-    position: relative;
+    transition: all 0.3s ease;
+}
+
+.stamp:hover {
+    transform: scale(1.05);
 }
 
 .stamp.stamped {
-    background-color: #4CAF50;
-    color: white;
+    animation: stampEffect 0.5s ease-out;
 }
 
-.stamp.stamped::after {
-    content: "✓";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 40px;
-}
-
-#message {
-    text-align: center;
-    margin-top: 20px;
-    font-weight: bold;
+@keyframes stampEffect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
 }
