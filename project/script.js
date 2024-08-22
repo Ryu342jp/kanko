@@ -15,10 +15,23 @@ function updateStamps() {
     const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
     document.querySelectorAll('.stamp').forEach((stamp) => {
         const stampId = parseInt(stamp.dataset.id);
+        const colorImg = stamp.querySelector('.stamp-color');
         if (stamps.includes(stampId)) {
             stamp.classList.add('collected');
+            if (colorImg && colorImg.complete && colorImg.naturalWidth !== 0) {
+                // 画像データが正常に読み込まれている場合
+                stamp.classList.add('has-image');
+            } else {
+                // 画像データが読み込めない場合
+                stamp.classList.remove('has-image');
+                stamp.style.backgroundColor = '#4CAF50';
+                stamp.style.color = 'white';
+            }
         } else {
             stamp.classList.remove('collected');
+            stamp.classList.remove('has-image');
+            stamp.style.backgroundColor = '';
+            stamp.style.color = '';
         }
     });
 
