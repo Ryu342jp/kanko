@@ -1,10 +1,8 @@
 const customStampIDs = [11501, 21802, 36903, 45804, 50085];
 
-// 指定座標（A地点とB地点）
-const targetLocations = [
-    { lat: 32.74940020598272, lon: 129.87958316982198 }, // A地点
-    { lat: 32.80864261545204, lon: 129.87437337696068 }  // B地点（仮の座標）
-];
+// 指定座標
+const targetLat = 32.80864261545204;
+const targetLon = 129.87437337696068;
 const maxDistance = 200; // メートル単位
 
 function initializeStamps() {
@@ -47,16 +45,9 @@ function checkLocation() {
             const userLat = position.coords.latitude;
             const userLon = position.coords.longitude;
             
-            let isInRange = false;
-            for (const target of targetLocations) {
-                const distance = calculateDistance(userLat, userLon, target.lat, target.lon);
-                if (distance <= maxDistance) {
-                    isInRange = true;
-                    break;
-                }
-            }
+            const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
             
-            if (isInRange) {
+            if (distance <= maxDistance) {
                 const urlParams = new URLSearchParams(window.location.search);
                 const stampId = urlParams.get('id');
                 if (stampId && customStampIDs.includes(parseInt(stampId))) {
@@ -99,3 +90,4 @@ const stampId = urlParams.get('id');
 if (stampId) {
     checkLocation();
 }
+
