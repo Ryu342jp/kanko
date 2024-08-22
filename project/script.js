@@ -11,7 +11,7 @@ function initializeStamps() {
     updateStamps();
 }
 
-ffunction updateStamps() {
+function updateStamps() {
     const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
     document.querySelectorAll('.stamp').forEach((stamp) => {
         const stampId = parseInt(stamp.dataset.id);
