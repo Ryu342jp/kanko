@@ -30,6 +30,13 @@
             <img src="st5.png" alt="スタンプ5" class="stamp-image">
         </div>
     </div>
+    <div id="completion-button" style="display: none;">
+    <button onclick="showCompletionCode()">スタッフに確認してもらう</button>
+</div>
+<div id="staff-reset" style="display: none;">
+    <input type="password" id="staff-password" placeholder="スタッフパスワード">
+    <button onclick="resetStamps()">スタンプをリセット</button>
+</div>
     <button onclick="checkLocation()">現在位置をチェック</button>
     <script src="script.js"></script>
 </body>
