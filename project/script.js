@@ -1,8 +1,10 @@
 const customStampIDs = [11501, 21802, 36903, 45804, 50085];
 
-// 指定座標
-const targetLat = 32.80864261545204;
-const targetLon = 129.87437337696068;
+// 指定座標（A地点とB地点）
+const targetLocations = [
+    { lat: 32.74940020598272, lon: 129.87958316982198 }, // A地点
+    { lat: 32.80864261545204, lon: 129.87437337696068 }  // B地点（仮の座標）
+];
 const maxDistance = 200; // メートル単位
 
 function initializeStamps() {
@@ -45,21 +47,28 @@ function checkLocation() {
             const userLat = position.coords.latitude;
             const userLon = position.coords.longitude;
             
-            const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
+            let isInRange = false;
+            for (const target of targetLocations) {
+                const distance = calculateDistance(userLat, userLon, target.lat, target.lon);
+                if (distance <= maxDistance) {
+                    isInRange = true;
+                    break;
+                }
+            }
             
-            if (distance <= maxDistance) {
+            if (isInRange) {
                 const urlParams = new URLSearchParams(window.location.search);
                 const stampId = urlParams.get('id');
                 if (stampId && customStampIDs.includes(parseInt(stampId))) {
                     collectStamp(parseInt(stampId));
                 } else {
-                    alert("有効なスタンプIDが指定されていません。");
+                    alert("有効な範囲内にいますが、スタンプIDが指定されていないか無効です。");
                 }
             } else {
-                alert("指定された範囲内にいません。");
+                alert("指定された範囲内にいません。スタンプを収集するには、指定された場所に移動してください。");
             }
         }, function(error) {
-            alert("位置情報の取得に失敗しました: " + error.message);
+            alert("位置情報の取得に失敗しました: " + error.message + "\n位置情報の許可を確認し、ページをリロードしてください。");
         });
     } else {
         alert("お使いのブラウザは位置情報をサポートしていません。");
@@ -82,12 +91,8 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     return R * c; // メートル単位の距離
 }
 
-window.onload = initializeStamps;
 
-// URLパラメータからスタンプIDを取得して収集
-const urlParams = new URLSearchParams(window.location.search);
-const stampId = urlParams.get('id');
-if (stampId) {
+document.addEventListener('DOMContentLoaded', function() {
+    initializeStamps();
     checkLocation();
-}
-
+});
