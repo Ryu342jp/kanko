@@ -18,12 +18,10 @@ function updateStamps() {
         if (stamps.includes(stampId)) {
             stamp.classList.add('collected');
             const img = stamp.querySelector('.stamp-image');
-            if (img.complete) {
-                stamp.classList.add('has-image');
-            } else {
-                img.onload = () => stamp.classList.add('has-image');
-                img.onerror = () => stamp.classList.remove('has-image');
-            }
+            if (stamps.includes(stampId)) {
+            stamp.classList.add('collected');
+        } else {
+            stamp.classList.remove('collected');
         }
     });
 
