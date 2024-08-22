@@ -21,15 +21,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    font-weight: bold;
     position: relative;
     overflow: hidden;
-}
-
-.stamp-number {
-    position: absolute;
-    z-index: 1;
 }
 
 .stamp-image {
@@ -39,11 +32,24 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    opacity: 0;
     transition: opacity 0.3s ease;
-    z-index: 2;
 }
 
+.stamp-bw {
+    opacity: 1;
+}
+
+.stamp-color {
+    opacity: 0;
+}
+
+.collected .stamp-bw {
+    opacity: 0;
+}
+
+.collected .stamp-color {
+    opacity: 1;
+}
 .collected .stamp-image {
     opacity: 1;
 }
