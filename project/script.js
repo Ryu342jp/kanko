@@ -26,6 +26,32 @@ function updateStamps() {
             }
         }
     });
+
+    // すべてのスタンプが収集されたかチェック
+    if (stamps.length === customStampIDs.length) {
+        document.getElementById('completion-button').style.display = 'block';
+    } else {
+        document.getElementById('completion-button').style.display = 'none';
+    }
+}
+
+function showCompletionCode() {
+    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    alert(`完了コード: ${code}\nこのコードをスタッフに見せてください。`);
+    document.getElementById('staff-reset').style.display = 'block';
+}
+
+function resetStamps() {
+    const password = document.getElementById('staff-password').value;
+    if (password === 'staffpass123') { // 実際の運用では、より安全なパスワード認証方法を使用してください
+        localStorage.removeItem('stamps');
+        updateStamps();
+        alert('スタンプがリセットされました。');
+        document.getElementById('staff-reset').style.display = 'none';
+        document.getElementById('completion-button').style.display = 'none';
+    } else {
+        alert('パスワードが正しくありません。');
+    }
 }
 
 function collectStamp(id) {
