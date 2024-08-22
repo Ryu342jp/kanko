@@ -1,9 +1,9 @@
 const customStampIDs = [11501, 21802, 36903, 45804, 50085];
 
 // 指定座標
-const targetLat = 32.80871950551911;
-const targetLon = 129.8743958652708;
-const maxDistance = 500; // メートル単位
+const targetLat = 32.74940020598272;
+const targetLon = 129.87958316982198;
+const maxDistance = 200; // メートル単位
 
 function initializeStamps() {
     updateStamps();
