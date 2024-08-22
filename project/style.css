@@ -58,3 +58,8 @@ body {
     background-color: #4CAF50;
     color: white;
 }
+
+.stamp.collected:not(.has-image) {
+    background-color: #4CAF50;
+    color: white;
+}
