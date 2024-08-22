@@ -11,14 +11,11 @@ function initializeStamps() {
     updateStamps();
 }
 
-function updateStamps() {
+ffunction updateStamps() {
     const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
     document.querySelectorAll('.stamp').forEach((stamp) => {
         const stampId = parseInt(stamp.dataset.id);
         if (stamps.includes(stampId)) {
-            stamp.classList.add('collected');
-            const img = stamp.querySelector('.stamp-image');
-            if (stamps.includes(stampId)) {
             stamp.classList.add('collected');
         } else {
             stamp.classList.remove('collected');
