@@ -70,7 +70,7 @@ function collectStamp(id) {
         localStorage.setItem('stamps', JSON.stringify(stamps));
         updateStamps();
         const stampIndex = customStampIDs.indexOf(id) + 1;
-        alert(`スタンプ${stampIndex}（ID: ${id}）を獲得しました！`);
+        alert(`スタンプ${stampIndex}を獲得しました！`);
     } else {
         alert('このスタンプは既に獲得済みです。');
     }
