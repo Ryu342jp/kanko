@@ -17,29 +17,21 @@ const ball = document.getElementById('ball');
 const resultDiv = document.getElementById('result');
 const remainingPrizesDiv = document.getElementById('remaining-prizes');
 
-let garaGaraSound;
-let endSound;
+let garaGaraSound = new Audio('gara.mp3');
+let endSound = new Audio('kara.mp3');
 
 let isSpinning = false;
 let startX, startY;
 let isDragging = false;
 let currentRotation = 0;
 
-// 音声ファイルの読み込み
-function preloadAudio() {
-    garaGaraSound = new Audio('gara.mp3');
-    endSound = new Audio('kara.mp3');
-    
-    // がらがらの音の長さを確認
-    garaGaraSound.addEventListener('loadedmetadata', () => {
-        if (garaGaraSound.duration !== 3) {
-            console.warn('がらがらの音の長さが3秒ではありません。音声ファイルを確認してください。');
-        }
-    });
-}
-
-// ページ読み込み時に音声をプリロード
-window.addEventListener('load', preloadAudio);
+// 音声ファイルの読み込み確認
+garaGaraSound.addEventListener('canplaythrough', () => {
+    console.log('がらがら音の読み込み完了');
+});
+endSound.addEventListener('canplaythrough', () => {
+    console.log('玉の落ちる音の読み込み完了');
+});
 
 garapon.addEventListener('touchstart', handleTouchStart);
 garapon.addEventListener('touchmove', handleTouchMove);
@@ -86,50 +78,46 @@ function handleTouchEnd() {
     if (!isDragging || isSpinning) return;
     isDragging = false;
     isSpinning = true;
-    garaGaraSound.play().catch(e => console.error("音声再生エラー:", e));
+
     // 音の再生開始
     garaGaraSound.currentTime = 0;
-    garaGaraSound.play();
+    garaGaraSound.play().catch(e => console.error("音声再生エラー:", e));
 
     const totalRotation = currentRotation + 1080; // 3回転（360度 × 3）
     octagon.style.transition = `transform 3s ease-out`;
     octagon.style.transform = `rotate(${totalRotation}deg)`;
 
     // がらがらの音が終わったら玉を落とす
-    garaGaraSound.onended = () => {
+    setTimeout(() => {
         isSpinning = false;
         currentRotation = totalRotation % 360;
         octagon.style.transition = 'none';
         
-        endSound.play();
+        endSound.play().catch(e => console.error("音声再生エラー:", e));
         dropBall();
-    };
+    }, 3000);
 }
 
 function dropBall() {
     const prize = drawPrize();
     ball.style.backgroundColor = prize.color;
-    ball.style.display = 'block'; // 玉を表示
-    ball.style.top = '340px'; // 落下後の位置
-
-    // 玉の初期位置をリセット
-    setTimeout(() => {
-        ball.style.transition = 'none';
-        ball.style.top = '0px';
-        ball.style.display = 'none';
-        
-        // トランジションを再有効化
-        setTimeout(() => {
-            ball.style.transition = 'top 0.5s ease-in';
-            ball.style.display = 'block';
-            ball.style.top = '340px';
-        }, 50);
-    }, 0);
+    ball.style.display = 'block';
+    ball.style.top = '340px';
 
     setTimeout(() => {
         resultDiv.textContent = `結果: ${prize.name}`;
         updateRemainingPrizes();
         savePrizes();
+        
+        // 玉を元の位置に戻す
+        setTimeout(() => {
+            ball.style.transition = 'none';
+            ball.style.top = '0px';
+            ball.style.display = 'none';
+            
+            // 次の回転のために準備
+            isSpinning = false;
+        }, 2000);
     }, 500);
 }
 
