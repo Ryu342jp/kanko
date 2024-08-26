@@ -27,8 +27,8 @@ let currentRotation = 0;
 
 // 音声ファイルの読み込み
 function preloadAudio() {
-    garaGaraSound = new Audio('path/to/your/garagara_sound.mp3');
-    endSound = new Audio('path/to/your/end_sound.mp3');
+    garaGaraSound = new Audio('gara.mp3');
+    endSound = new Audio('kara.mp3');
     
     // がらがらの音の長さを確認
     garaGaraSound.addEventListener('loadedmetadata', () => {
