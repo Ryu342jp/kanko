@@ -45,6 +45,23 @@ body {
     transition: transform 0.5s ease;
 }
 
+#remaining-prizes {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+#ball {
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 340px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: top 0.5s ease-in;
+}
+
 #handle {
     width: 40px;
     height: 40px;
