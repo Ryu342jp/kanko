@@ -1,8 +1,8 @@
 const prizes = [
-    { name: '商品A', count: 100 },
-    { name: '商品B', count: 5 },
-    { name: '商品C', count: 50 },
-    { name: 'はずれ', count: 200 }
+    { name: '商品A', count: 100, color: '#ff0000' },
+    { name: '商品B', count: 5, color: '#00ff00' },
+    { name: '商品C', count: 50, color: '#0000ff' },
+    { name: 'はずれ', count: 200, color: '#ffffff' }
 ];
 
 let remainingPrizes = [...prizes];
@@ -23,6 +23,21 @@ let currentRotation = 0;
 garapon.addEventListener('touchstart', handleTouchStart);
 garapon.addEventListener('touchmove', handleTouchMove);
 garapon.addEventListener('touchend', handleTouchEnd);
+
+// 色設定の取得と更新
+const colorA = document.getElementById('colorA');
+const colorB = document.getElementById('colorB');
+const colorC = document.getElementById('colorC');
+
+colorA.addEventListener('change', updateColors);
+colorB.addEventListener('change', updateColors);
+colorC.addEventListener('change', updateColors);
+
+function updateColors() {
+    prizes[0].color = colorA.value;
+    prizes[1].color = colorB.value;
+    prizes[2].color = colorC.value;
+}
 
 function handleTouchStart(e) {
     if (isSpinning) return;
@@ -67,14 +82,15 @@ function handleTouchEnd() {
 }
 
 function dropBall() {
+    const prize = drawPrize();
+    ball.style.backgroundColor = prize.color;
     ball.style.display = 'block';
     ball.style.top = '340px';
     ballDropSound.play();
 
     setTimeout(() => {
-        const prize = drawPrize();
         resultDiv.textContent = `結果: ${prize.name}`;
-        ball.style.display = 'none';
+        // 玉を残したままにする
     }, 500);
 }
 
