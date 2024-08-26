@@ -11,23 +11,19 @@ if (savedPrizes) {
     prizes = JSON.parse(savedPrizes);
 }
 
-const garapon = document.getElementById('garapon');
 const octagon = document.getElementById('octagon');
 const ball = document.getElementById('ball');
 const resultDiv = document.getElementById('result');
 const remainingPrizesDiv = document.getElementById('remaining-prizes');
+const spinButton = document.getElementById('spin-button');
 
-const garaGaraSound = new Audio('gara.mp3');
-const endSound = new Audio('kara.mp3');
+const garaGaraSound = new Audio('kara.mp3');
+const endSound = new Audio('gara.mp3');
 
 let isSpinning = false;
-let startX, startY;
-let isDragging = false;
 let currentRotation = 0;
 
-garapon.addEventListener('touchstart', handleTouchStart);
-garapon.addEventListener('touchmove', handleTouchMove);
-garapon.addEventListener('touchend', handleTouchEnd);
+spinButton.addEventListener('click', startSpin);
 
 // 色設定の取得と更新
 const colorA = document.getElementById('colorA');
@@ -45,10 +41,6 @@ function updateColors() {
     savePrizes();
     updateRemainingPrizes();
 }
-
-const spinButton = document.getElementById('spin-button');
-
-spinButton.addEventListener('click', startSpin);
 
 function startSpin() {
     if (isSpinning) return;
@@ -68,49 +60,6 @@ function startSpin() {
         endSound.play(); // 回転終了時に音を再生
         dropBall();
         spinButton.disabled = false;
-    }, 3000); // 3秒後に実行
-}
-
-
-function handleTouchStart(e) {
-    if (isSpinning) return;
-    isDragging = true;
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    garaGaraSound.play();
-}
-
-function handleTouchMove(e) {
-    if (!isDragging || isSpinning) return;
-    const currentX = e.touches[0].clientX;
-    const currentY = e.touches[0].clientY;
-    const deltaX = currentX - startX;
-    const deltaY = currentY - startY;
-    const rotation = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-    currentRotation += rotation;
-    octagon.style.transform = `rotate(${currentRotation}deg)`;
-    startX = currentX;
-    startY = currentY;
-}
-
-function handleTouchEnd() {
-    if (!isDragging || isSpinning) return;
-    isDragging = false;
-    isSpinning = true;
-    garaGaraSound.pause();
-    garaGaraSound.currentTime = 0;
-
-    // 3秒間の回転アニメーション
-    const totalRotation = currentRotation + 1080; // 3回転（360度 × 3）
-    octagon.style.transition = `transform 3s ease-out`;
-    octagon.style.transform = `rotate(${totalRotation}deg)`;
-
-    setTimeout(() => {
-        isSpinning = false;
-        currentRotation = totalRotation % 360;
-        octagon.style.transition = 'none';
-        endSound.play(); // 回転終了時に音を再生
-        dropBall();
     }, 3000); // 3秒後に実行
 }
 
