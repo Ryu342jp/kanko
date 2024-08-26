@@ -7,23 +7,37 @@ body {
 
 #stamp-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
     gap: 10px;
-    margin-top: 20px;
+    height: 300px;
+    position: absolute;
+    padding: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right:0;
+    margin: auto;
+    min-width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    white-space: nowrap;     /* コンテンツを横並びにする */
+    transform: translateX(0); /* 初期位置 */
+    transition: transform 0.3s ease; /* スライド時のアニメーション */
 }
 
 .stamp {
-    width: 100px;
-    height: 100px;
+    width: 400px;
+    height: 400px;
     border: 2px solid #000;
     border-radius: 50%;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
+    flex-shrink: 0; /* アイコンが詰まらないようにする */
 }
+
+
 
 .stamp-image {
     width: 100%;

@@ -131,3 +131,72 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeStamps();
     checkLocation();
 });
+
+
+const stampContainer = document.getElementById('stamp-container');
+
+let isDown = false;
+let startX;
+let scrollLeft;
+
+stampContainer.addEventListener('mousedown', (e) => {
+    isDown = true;
+    stampContainer.classList.add('active');
+    startX = e.pageX - stampContainer.offsetLeft;
+    scrollLeft = stampContainer.scrollLeft;
+});
+
+stampContainer.addEventListener('mouseleave', () => {
+    isDown = false;
+    stampContainer.classList.remove('active');
+});
+
+stampContainer.addEventListener('mouseup', () => {
+    isDown = false;
+    stampContainer.classList.remove('active');
+});
+
+stampContainer.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - stampContainer.offsetLeft;
+    const walk = (startX - x) * 3; // スワイプの方向を逆にする
+    const newScrollLeft = scrollLeft + walk;
+
+    // スライドを両端で止める
+    if (newScrollLeft < 0) {
+        stampContainer.style.transform = `translateX(0px)`;
+    } else if (newScrollLeft > stampContainer.scrollWidth - stampContainer.clientWidth) {
+        const maxOffset = stampContainer.scrollWidth - stampContainer.clientWidth;
+        stampContainer.style.transform = `translateX(-${maxOffset}px)`;
+    } else {
+        stampContainer.style.transform = `translateX(-${newScrollLeft}px)`;
+    }
+});
+
+stampContainer.addEventListener('touchstart', (e) => {
+    isDown = true;
+    startX = e.touches[0].pageX - stampContainer.offsetLeft;
+    scrollLeft = stampContainer.scrollLeft;
+});
+
+stampContainer.addEventListener('touchend', () => {
+    isDown = false;
+});
+
+stampContainer.addEventListener('touchmove', (e) => {
+    if (!isDown) return;
+    const x = e.touches[0].pageX - stampContainer.offsetLeft;
+    const walk = (startX - x) * 3; // スワイプの方向を逆にする
+    const newScrollLeft = scrollLeft + walk;
+
+    // スライドを両端で止める
+    if (newScrollLeft < 0) {
+        stampContainer.style.transform = `translateX(0px)`;
+    } else if (newScrollLeft > stampContainer.scrollWidth - stampContainer.clientWidth) {
+        const maxOffset = stampContainer.scrollWidth - stampContainer.clientWidth;
+        stampContainer.style.transform = `translateX(-${maxOffset}px)`;
+    } else {
+        stampContainer.style.transform = `translateX(-${newScrollLeft}px)`;
+    }
+});
