@@ -16,7 +16,6 @@ const octagon = document.getElementById('octagon');
 const ball = document.getElementById('ball');
 const resultDiv = document.getElementById('result');
 const remainingPrizesDiv = document.getElementById('remaining-prizes');
-const spinButton = document.getElementById('spinButton');
 
 let garaGaraSound;
 let endSound;
@@ -31,12 +30,11 @@ function preloadAudio() {
     garaGaraSound = new Audio('gara.mp3');
     endSound = new Audio('kara.mp3');
     
-    // 音声ファイルの読み込みを確認
-    garaGaraSound.addEventListener('canplaythrough', () => {
-        console.log('がらがら音の読み込み完了');
-    });
-    endSound.addEventListener('canplaythrough', () => {
-        console.log('玉の落ちる音の読み込み完了');
+    // がらがらの音の長さを確認
+    garaGaraSound.addEventListener('loadedmetadata', () => {
+        if (garaGaraSound.duration !== 3) {
+            console.warn('がらがらの音の長さが3秒ではありません。音声ファイルを確認してください。');
+        }
     });
 }
 
@@ -46,7 +44,6 @@ window.addEventListener('load', preloadAudio);
 garapon.addEventListener('touchstart', handleTouchStart);
 garapon.addEventListener('touchmove', handleTouchMove);
 garapon.addEventListener('touchend', handleTouchEnd);
-spinButton.addEventListener('click', startSpin);
 
 // 色設定の取得と更新
 const colorA = document.getElementById('colorA');
