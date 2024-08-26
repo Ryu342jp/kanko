@@ -86,7 +86,7 @@ function handleTouchEnd() {
     if (!isDragging || isSpinning) return;
     isDragging = false;
     isSpinning = true;
-
+    garaGaraSound.play().catch(e => console.error("音声再生エラー:", e));
     // 音の再生開始
     garaGaraSound.currentTime = 0;
     garaGaraSound.play();
@@ -109,8 +109,22 @@ function handleTouchEnd() {
 function dropBall() {
     const prize = drawPrize();
     ball.style.backgroundColor = prize.color;
-    ball.style.display = 'block';
-    ball.style.top = '340px';
+    ball.style.display = 'block'; // 玉を表示
+    ball.style.top = '340px'; // 落下後の位置
+
+    // 玉の初期位置をリセット
+    setTimeout(() => {
+        ball.style.transition = 'none';
+        ball.style.top = '0px';
+        ball.style.display = 'none';
+        
+        // トランジションを再有効化
+        setTimeout(() => {
+            ball.style.transition = 'top 0.5s ease-in';
+            ball.style.display = 'block';
+            ball.style.top = '340px';
+        }, 50);
+    }, 0);
 
     setTimeout(() => {
         resultDiv.textContent = `結果: ${prize.name}`;
