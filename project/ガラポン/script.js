@@ -17,8 +17,8 @@ const ball = document.getElementById('ball');
 const resultDiv = document.getElementById('result');
 const remainingPrizesDiv = document.getElementById('remaining-prizes');
 
-const garaGaraSound = new Audio('kara.mp3');
-const endSound = new Audio('gara.mp3');
+const garaGaraSound = new Audio('gara.mp3');
+const endSound = new Audio('kara.mp3');
 
 let isSpinning = false;
 let startX, startY;
