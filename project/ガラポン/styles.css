@@ -1,0 +1,54 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    text-align: center;
+}
+
+#garapon {
+    width: 200px;
+    height: 200px;
+    background-color: #ff9900;
+    border-radius: 50%;
+    position: relative;
+    margin: 20px auto;
+    overflow: hidden;
+    touch-action: none;
+}
+
+#handle {
+    width: 20px;
+    height: 100px;
+    background-color: #333;
+    position: absolute;
+    top: -50px;
+    left: 90px;
+    transform-origin: bottom center;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+}
+
+#ball {
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 85px;
+    left: 85px;
+    transition: top 0.5s ease-in;
+}
+
+#result {
+    font-size: 24px;
+    margin: 20px 0;
+    font-weight: bold;
+}
