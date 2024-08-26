@@ -17,7 +17,7 @@ const ball = document.getElementById('ball');
 const resultDiv = document.getElementById('result');
 const remainingPrizesDiv = document.getElementById('remaining-prizes');
 
-const garaGaraSound = new Audio('gara.mp3');
+let garaGaraSound;
 const endSound = new Audio('kara.mp3');
 
 let isSpinning = false;
@@ -25,20 +25,45 @@ let startX, startY;
 let isDragging = false;
 let currentRotation = 0;
 
+// 音声ファイルの読み込み
+function preloadAudio() {
+    garaGaraSound = new Audio('gara.mp3');
+    garaGaraSound.loop = true; // ループ再生を有効に
+}
+
+// ページ読み込み時に音声をプリロード
+window.addEventListener('load', preloadAudio);
+
 garapon.addEventListener('touchstart', handleTouchStart);
 garapon.addEventListener('touchmove', handleTouchMove);
 garapon.addEventListener('touchend', handleTouchEnd);
 
+// 色設定の取得と更新
+const colorA = document.getElementById('colorA');
+const colorB = document.getElementById('colorB');
+const colorC = document.getElementById('colorC');
+
+colorA.addEventListener('change', updateColors);
+colorB.addEventListener('change', updateColors);
+colorC.addEventListener('change', updateColors);
+
+function updateColors() {
+    prizes[0].color = colorA.value;
+    prizes[1].color = colorB.value;
+    prizes[2].color = colorC.value;
+    savePrizes();
+    updateRemainingPrizes();
+}
+
 function handleTouchStart(e) {
-    if (isSpinning) return; // 回転中は操作を無効化
+    if (isSpinning) return;
     isDragging = true;
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
-    garaGaraSound.play();
 }
 
 function handleTouchMove(e) {
-    if (!isDragging || isSpinning) return; // 回転中は操作を無効化
+    if (!isDragging || isSpinning) return;
     const currentX = e.touches[0].clientX;
     const currentY = e.touches[0].clientY;
     const deltaX = currentX - startX;
@@ -51,24 +76,30 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd() {
-    if (!isDragging || isSpinning) return; // 回転中は操作を無効化
+    if (!isDragging || isSpinning) return;
     isDragging = false;
-    isSpinning = true; // 回転開始
-    garaGaraSound.pause();
-    garaGaraSound.currentTime = 0;
+    isSpinning = true;
 
-    // 3秒間の回転アニメーション
+    // 音の再生開始
+    garaGaraSound.currentTime = 0;
+    garaGaraSound.play();
+
     const totalRotation = currentRotation + 1080; // 3回転（360度 × 3）
     octagon.style.transition = `transform 3s ease-out`;
     octagon.style.transform = `rotate(${totalRotation}deg)`;
 
     setTimeout(() => {
-        isSpinning = false; // 回転終了
+        isSpinning = false;
         currentRotation = totalRotation % 360;
         octagon.style.transition = 'none';
-        endSound.play(); // 回転終了時に音を再生
+        
+        // 音の停止
+        garaGaraSound.pause();
+        garaGaraSound.currentTime = 0;
+
+        endSound.play();
         dropBall();
-    }, 3000); // 3秒後に実行
+    }, 3000);
 }
 
 function dropBall() {
