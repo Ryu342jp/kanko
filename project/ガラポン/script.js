@@ -17,8 +17,8 @@ const ball = document.getElementById('ball');
 const resultDiv = document.getElementById('result');
 const remainingPrizesDiv = document.getElementById('remaining-prizes');
 
-const garaGaraSound = new Audio('https://soundbible.com/grab.php?id=1700&type=mp3');
-const ballDropSound = new Audio('https://soundbible.com/grab.php?id=1830&type=mp3');
+const garaGaraSound = new Audio('path/to/your/garagara_sound.mp3');
+const endSound = new Audio('path/to/your/end_sound.mp3');
 
 let isSpinning = false;
 let startX, startY;
@@ -74,18 +74,18 @@ function handleTouchEnd() {
     garaGaraSound.pause();
     garaGaraSound.currentTime = 0;
 
-    const spins = 5 + Math.floor(Math.random() * 5);
-    const totalRotation = spins * 360 + (360 - (currentRotation % 360));
-
-    octagon.style.transition = `transform ${spins}s ease-out`;
+    // 3秒間の回転アニメーション
+    const totalRotation = currentRotation + 1080; // 3回転（360度 × 3）
+    octagon.style.transition = `transform 3s ease-out`;
     octagon.style.transform = `rotate(${totalRotation}deg)`;
 
     setTimeout(() => {
         isSpinning = false;
         currentRotation = totalRotation % 360;
         octagon.style.transition = 'none';
+        endSound.play(); // 回転終了時に音を再生
         dropBall();
-    }, spins * 1000);
+    }, 3000); // 3秒後に実行
 }
 
 function dropBall() {
@@ -93,7 +93,6 @@ function dropBall() {
     ball.style.backgroundColor = prize.color;
     ball.style.display = 'block';
     ball.style.top = '340px';
-    ballDropSound.play();
 
     setTimeout(() => {
         resultDiv.textContent = `結果: ${prize.name}`;
