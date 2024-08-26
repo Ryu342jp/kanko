@@ -46,6 +46,32 @@ function updateColors() {
     updateRemainingPrizes();
 }
 
+const spinButton = document.getElementById('spin-button');
+
+spinButton.addEventListener('click', startSpin);
+
+function startSpin() {
+    if (isSpinning) return;
+    isSpinning = true;
+    spinButton.disabled = true;
+    garaGaraSound.play();
+
+    // 3秒間の回転アニメーション
+    const totalRotation = currentRotation + 1080; // 3回転（360度 × 3）
+    octagon.style.transition = `transform 3s ease-out`;
+    octagon.style.transform = `rotate(${totalRotation}deg)`;
+
+    setTimeout(() => {
+        isSpinning = false;
+        currentRotation = totalRotation % 360;
+        octagon.style.transition = 'none';
+        endSound.play(); // 回転終了時に音を再生
+        dropBall();
+        spinButton.disabled = false;
+    }, 3000); // 3秒後に実行
+}
+
+
 function handleTouchStart(e) {
     if (isSpinning) return;
     isDragging = true;
