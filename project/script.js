@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+//スライダー
 const stampContainer = document.getElementById('stamp-container');
 
 let isDown = false;
@@ -186,6 +187,7 @@ stampContainer.addEventListener('touchend', () => {
 
 stampContainer.addEventListener('touchmove', (e) => {
     if (!isDown) return;
+    e.preventDefault(); // 横スクロールが画面全体に及ばないようにする
     const x = e.touches[0].pageX - stampContainer.offsetLeft;
     const walk = (startX - x) * 3; // スワイプの方向を逆にする
     const newScrollLeft = scrollLeft + walk;
