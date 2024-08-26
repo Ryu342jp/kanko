@@ -18,7 +18,7 @@ const resultDiv = document.getElementById('result');
 const remainingPrizesDiv = document.getElementById('remaining-prizes');
 
 let garaGaraSound;
-const endSound = new Audio('kara.mp3');
+let endSound;
 
 let isSpinning = false;
 let startX, startY;
@@ -27,8 +27,15 @@ let currentRotation = 0;
 
 // 音声ファイルの読み込み
 function preloadAudio() {
-    garaGaraSound = new Audio('gara.mp3');
-    garaGaraSound.loop = true; // ループ再生を有効に
+    garaGaraSound = new Audio('path/to/your/garagara_sound.mp3');
+    endSound = new Audio('path/to/your/end_sound.mp3');
+    
+    // がらがらの音の長さを確認
+    garaGaraSound.addEventListener('loadedmetadata', () => {
+        if (garaGaraSound.duration !== 3) {
+            console.warn('がらがらの音の長さが3秒ではありません。音声ファイルを確認してください。');
+        }
+    });
 }
 
 // ページ読み込み時に音声をプリロード
@@ -88,18 +95,15 @@ function handleTouchEnd() {
     octagon.style.transition = `transform 3s ease-out`;
     octagon.style.transform = `rotate(${totalRotation}deg)`;
 
-    setTimeout(() => {
+    // がらがらの音が終わったら玉を落とす
+    garaGaraSound.onended = () => {
         isSpinning = false;
         currentRotation = totalRotation % 360;
         octagon.style.transition = 'none';
         
-        // 音の停止
-        garaGaraSound.pause();
-        garaGaraSound.currentTime = 0;
-
         endSound.play();
         dropBall();
-    }, 3000);
+    };
 }
 
 function dropBall() {
