@@ -30,6 +30,7 @@ function handleTouchStart(e) {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     garaGaraSound.play();
+    document.getElementById('octagon').style.transform = 'scale(1.1)';
 }
 
 function handleTouchMove(e) {
@@ -40,7 +41,7 @@ function handleTouchMove(e) {
     const deltaY = currentY - startY;
     const rotation = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
     currentRotation += rotation;
-    handle.style.transform = `rotate(${currentRotation}deg)`;
+    handle.style.transform = `translateX(-50%) rotate(${currentRotation}deg)`;
     startX = currentX;
     startY = currentY;
 }
@@ -56,7 +57,9 @@ function handleTouchEnd() {
     const totalRotation = spins * 360 + (360 - (currentRotation % 360));
 
     handle.style.transition = `transform ${spins}s ease-out`;
-    handle.style.transform = `rotate(${totalRotation}deg)`;
+    handle.style.transform = `translateX(-50%) rotate(${totalRotation}deg)`;
+
+    document.getElementById('octagon').style.transform = 'scale(1)';
 
     setTimeout(() => {
         isSpinning = false;
@@ -67,16 +70,15 @@ function handleTouchEnd() {
 }
 
 function dropBall() {
-    ball.style.top = '250px';
+    ball.style.top = '350px';
     ballDropSound.play();
 
     setTimeout(() => {
         const prize = drawPrize();
         resultDiv.textContent = `結果: ${prize.name}`;
-        ball.style.top = '85px';
+        ball.style.top = '135px';
     }, 500);
 }
-
 function drawPrize() {
     const totalCount = remainingPrizes.reduce((sum, prize) => sum + prize.count, 0);
     const randomNum = Math.floor(Math.random() * totalCount);
