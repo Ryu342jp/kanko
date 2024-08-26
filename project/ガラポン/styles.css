@@ -27,12 +27,9 @@ body {
     background-color: #fff;
     border-radius: 50%;
     position: absolute;
-    top: 340px;
-    left: 50%;
-    transform: translateX(-50%);
+    display: none; /* 初期状態は非表示 */
     transition: top 0.5s ease-in;
 }
-
 .container {
     text-align: center;
 }
