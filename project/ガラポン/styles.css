@@ -8,6 +8,31 @@ body {
     background-color: #f0f0f0;
 }
 
+#color-settings {
+    margin-top: 20px;
+}
+
+#color-settings label {
+    margin-right: 10px;
+}
+
+#remaining-prizes {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+#ball {
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 340px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: top 0.5s ease-in;
+}
+
 .container {
     text-align: center;
 }
@@ -67,43 +92,11 @@ body {
     left: 50%;
     transform: translateX(-50%);
     transition: top 0.5s ease-in;
+    display: none;
 }
 
 #result {
     font-size: 24px;
     margin: 20px 0;
     font-weight: bold;
-}
-
-#remaining-prizes {
-    margin-top: 20px;
-    font-size: 18px;
-}
-
-#color-settings {
-    margin-top: 20px;
-}
-
-#color-settings label {
-    margin-right: 10px;
-}
-
-#spin-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 18px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#spin-button:hover {
-    background-color: #45a049;
-}
-
-#spin-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
 }
