@@ -29,25 +29,8 @@ garapon.addEventListener('touchstart', handleTouchStart);
 garapon.addEventListener('touchmove', handleTouchMove);
 garapon.addEventListener('touchend', handleTouchEnd);
 
-// 色設定の取得と更新
-const colorA = document.getElementById('colorA');
-const colorB = document.getElementById('colorB');
-const colorC = document.getElementById('colorC');
-
-colorA.addEventListener('change', updateColors);
-colorB.addEventListener('change', updateColors);
-colorC.addEventListener('change', updateColors);
-
-function updateColors() {
-    prizes[0].color = colorA.value;
-    prizes[1].color = colorB.value;
-    prizes[2].color = colorC.value;
-    savePrizes();
-    updateRemainingPrizes();
-}
-
 function handleTouchStart(e) {
-    if (isSpinning) return;
+    if (isSpinning) return; // 回転中は操作を無効化
     isDragging = true;
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
@@ -55,7 +38,7 @@ function handleTouchStart(e) {
 }
 
 function handleTouchMove(e) {
-    if (!isDragging || isSpinning) return;
+    if (!isDragging || isSpinning) return; // 回転中は操作を無効化
     const currentX = e.touches[0].clientX;
     const currentY = e.touches[0].clientY;
     const deltaX = currentX - startX;
@@ -68,9 +51,9 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd() {
-    if (!isDragging || isSpinning) return;
+    if (!isDragging || isSpinning) return; // 回転中は操作を無効化
     isDragging = false;
-    isSpinning = true;
+    isSpinning = true; // 回転開始
     garaGaraSound.pause();
     garaGaraSound.currentTime = 0;
 
@@ -80,7 +63,7 @@ function handleTouchEnd() {
     octagon.style.transform = `rotate(${totalRotation}deg)`;
 
     setTimeout(() => {
-        isSpinning = false;
+        isSpinning = false; // 回転終了
         currentRotation = totalRotation % 360;
         octagon.style.transition = 'none';
         endSound.play(); // 回転終了時に音を再生
