@@ -21,19 +21,26 @@ function initializeStamps() {
 function updateStamps() {
     const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
     const stampContainer = document.getElementById('stamp-container');
-    stampContainer.innerHTML = ''; // コンテナをクリア
+    
+    // コンテナをクリア
+    stampContainer.innerHTML = '';
 
     stamps.forEach(stampId => {
         const stampInfo = stampData.find(stamp => stamp.id === stampId);
         if (stampInfo) {
+            console.log(`スタンプID: ${stampId}, 画像URL: ${stampInfo.image}`); // デバッグ用
             const newStamp = document.createElement('div');
             newStamp.className = 'stamp collected';
             newStamp.style.backgroundImage = `url(${stampInfo.image})`;
+            newStamp.style.backgroundSize = 'cover';
+            newStamp.style.backgroundPosition = 'center';
             newStamp.style.display = 'block';
             newStamp.setAttribute('data-id', stampId);
+            newStamp.innerHTML = `
+                <img src="${stampInfo.image}" alt="スタンプ画像" class="stamp-image">
+            `;
 
             stampContainer.appendChild(newStamp);
-            console.log(`追加されたスタンプID: ${stampId}, 画像: ${stampInfo.image}`); // デバッグ用
         }
     });
 
@@ -70,6 +77,7 @@ function collectStamp(id) {
         stamps.push(id);
         localStorage.setItem('stamps', JSON.stringify(stamps));
         updateStamps();  // スタンプを更新する
+        console.log('updateStampsが呼び出されました'); // デバッグ用
         const stampIndex = customStampIDs.indexOf(id) + 1;
         alert(`スタンプ${stampIndex}を獲得しました！`);
     } else {
