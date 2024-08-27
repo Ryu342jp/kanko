@@ -155,8 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// スライダー機能（変更なし）
-
 // スライダー機能
 let startX;
 let scrollLeft;
