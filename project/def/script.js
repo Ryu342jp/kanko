@@ -28,19 +28,17 @@ function updateStamps() {
     
     customStampIDs.forEach(id => {
         const stampInfo = stampData.find(stamp => stamp.id === id.toString());
-        if (stampInfo) {
+        if (stampInfo && stampCounts[id] && stampCounts[id] > 0) {
             const newStamp = document.createElement('div');
-            newStamp.className = 'stamp';
-            if (stampCounts[id] && stampCounts[id] > 0) {
-                newStamp.classList.add('collected');
-                newStamp.style.backgroundImage = `url(${stampInfo.image})`;
-                newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id]}</div>`;
-            }
+            newStamp.className = 'stamp collected';
+            newStamp.style.backgroundImage = `url(${stampInfo.image})`;
+            newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id]}</div>`;
             newStamp.setAttribute('data-id', id);
             stampContainer.appendChild(newStamp);
         }
     });
 }
+
 
 function updatePoints() {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
@@ -48,7 +46,7 @@ function updatePoints() {
     Object.entries(stampCounts).forEach(([id, count]) => {
         const stamp = stampData.find(s => s.id === id);
         if (stamp && count > 0) {
-            totalPoints += stamp.points;
+            totalPoints += stamp.points * count;
         }
     });
     localStorage.setItem('points', totalPoints);
@@ -132,15 +130,13 @@ function usePoints() {
 function resetStamps() {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
     Object.keys(stampCounts).forEach(id => {
-        if (stampCounts[id] > 0) {
-            stampCounts[id] = 0;
-        }
+        stampCounts[id] = 0;
     });
     localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
     localStorage.setItem('points', '0');
     updateStamps();
     updatePoints();
-    alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。スタンプの表示と獲得履歴は保持されています。');
+    alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
