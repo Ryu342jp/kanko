@@ -1,7 +1,7 @@
 let prizes = [
-    { name: '商品A', count: 10, color: '#ff0000' },
-    { name: '商品B', count: 50, color: '#00ff00' },
-    { name: '商品C', count: 500, color: '#0000ff' },
+    { name: 'チケット', count: 1, color: '#ff0000' },
+    { name: '商品券A', count: 250, color: '#00ff00' },
+    { name: '商品券B', count: 500, color: '#0000ff' },
 ];
 
 // ローカルストレージから保存されたデータを読み込む
