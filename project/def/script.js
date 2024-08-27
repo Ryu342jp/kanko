@@ -152,6 +152,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+function resetPoints() {
+  const password = prompt("パスワードを入力してください");
+  if (password === "正しいパスワード") {
+    // ポイントを0にリセット
+    localStorage.setItem('points', '0');
+    // 画面上の表示を更新
+    updatePoints();
+    alert("ポイントがリセットされました");
+  } else {
+    alert("パスワードが間違っています");
+  }
+}
+
+function updatePoints() {
+  const points = parseInt(localStorage.getItem('points') || '0');
+  document.getElementById('points').textContent = `所持ポイント：${points}`;
+}
+
 // スライダー機能
 let startX;
 let scrollLeft;
