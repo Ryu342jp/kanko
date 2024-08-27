@@ -17,12 +17,6 @@ const targetLocations = [
 const maxDistance = 200;
 
 function initializeStamps() {
-    if (!localStorage.getItem('stampCounts')) {
-        localStorage.setItem('stampCounts', JSON.stringify({}));
-    }
-    if (!localStorage.getItem('lastStampDate')) {
-        localStorage.setItem('lastStampDate', JSON.stringify({}));
-    }
     updateStamps();
     updatePoints();
 }
@@ -34,17 +28,19 @@ function updateStamps() {
     
     customStampIDs.forEach(id => {
         const stampInfo = stampData.find(stamp => stamp.id === id.toString());
-        if (stampInfo && stampCounts[id] && stampCounts[id] > 0) {
+        if (stampInfo) {
             const newStamp = document.createElement('div');
-            newStamp.className = 'stamp collected';
-            newStamp.style.backgroundImage = `url(${stampInfo.image})`;
-            newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id]}</div>`;
+            newStamp.className = 'stamp';
+            if (stampCounts[id] && stampCounts[id] > 0) {
+                newStamp.classList.add('collected');
+                newStamp.style.backgroundImage = `url(${stampInfo.image})`;
+                newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id]}</div>`;
+            }
             newStamp.setAttribute('data-id', id);
             stampContainer.appendChild(newStamp);
         }
     });
 }
-
 
 function updatePoints() {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
@@ -52,7 +48,7 @@ function updatePoints() {
     Object.entries(stampCounts).forEach(([id, count]) => {
         const stamp = stampData.find(s => s.id === id);
         if (stamp && count > 0) {
-            totalPoints += stamp.points * count;
+            totalPoints += stamp.points;
         }
     });
     localStorage.setItem('points', totalPoints);
@@ -61,22 +57,11 @@ function updatePoints() {
 
 function collectStamp(id) {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
-    const lastStampDate = JSON.parse(localStorage.getItem('lastStampDate') || '{}');
-    const today = new Date().toDateString();
-
-    if (lastStampDate[id] === today) {
-        alert('このスタンプは本日すでに獲得しています。リセット後に再度獲得できます。');
-        return;
-    }
-
     if (!stampCounts[id]) {
         stampCounts[id] = 0;
     }
     stampCounts[id]++;
-    lastStampDate[id] = today;
-
     localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
-    localStorage.setItem('lastStampDate', JSON.stringify(lastStampDate));
     updateStamps();
     updatePoints();
     alert(`スタンプを獲得しました！獲得回数: ${stampCounts[id]}`);
@@ -114,15 +99,6 @@ function checkLocation() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    initializeStamps();
-    const urlParams = new URLSearchParams(window.location.search);
-    const stampId = urlParams.get('id');
-    if (stampId) {
-        checkLocation();
-    }
-});
-
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3;
     const φ1 = lat1 * Math.PI / 180;
@@ -155,12 +131,26 @@ function usePoints() {
 
 function resetStamps() {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
-    localStorage.removeItem('lastStampDate');
+    Object.keys(stampCounts).forEach(id => {
+        if (stampCounts[id] > 0) {
+            stampCounts[id] = 0;
+        }
+    });
+    localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
     localStorage.setItem('points', '0');
     updateStamps();
     updatePoints();
-    alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。スタンプの表示と獲得回数は保持されています。');
+    alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。スタンプの表示と獲得履歴は保持されています。');
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeStamps();
+    const urlParams = new URLSearchParams(window.location.search);
+    const stampId = urlParams.get('id');
+    if (stampId) {
+        checkLocation();
+    }
+});
 
 // スライダー機能
 let startX;
