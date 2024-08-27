@@ -1,6 +1,7 @@
 let prizes = [
-    { name: 'チケット当たり！', count: 1, color: '#ff0000' },
-    { name: 'はずれ', count: 1000, color: '#ffffff' }
+    { name: '商品A', count: 10, color: '#ff0000' },
+    { name: '商品B', count: 50, color: '#00ff00' },
+    { name: '商品C', count: 500, color: '#0000ff' },
 ];
 
 // ローカルストレージから保存されたデータを読み込む
@@ -25,9 +26,15 @@ let currentRotation = 0;
 
 // 音声ファイルの読み込み
 function preloadAudio() {
-    garaGaraSound = new Audio('https://ryu342jp.github.io/kanko/project/ガラポン/gara.mp3');
-    endSound = new Audio('https://ryu342jp.github.io/kanko/project/ガラポン/kara.mp3');
+    garaGaraSound = new Audio('gara.mp3');
+    endSound = new Audio('kara.mp3');
     
+    // がらがらの音の長さを確認
+    garaGaraSound.addEventListener('loadedmetadata', () => {
+        if (garaGaraSound.duration !== 3) {
+            console.warn('がらがらの音の長さが3秒ではありません。音声ファイルを確認してください。');
+        }
+    });
 }
 
 // ページ読み込み時に音声をプリロード
@@ -39,11 +46,17 @@ garapon.addEventListener('touchend', handleTouchEnd);
 
 // 色設定の取得と更新
 const colorA = document.getElementById('colorA');
+const colorB = document.getElementById('colorB');
+const colorC = document.getElementById('colorC');
 
 colorA.addEventListener('change', updateColors);
+colorB.addEventListener('change', updateColors);
+colorC.addEventListener('change', updateColors);
 
 function updateColors() {
     prizes[0].color = colorA.value;
+    prizes[1].color = colorB.value;
+    prizes[2].color = colorC.value;
     savePrizes();
     updateRemainingPrizes();
 }
