@@ -143,7 +143,7 @@ function goToExchange() {
 
 function usePoints() {
     const password = prompt('パスワードを入力してください：');
-    if (password === 'staffpass123') {
+    if (password === '0808') {
         resetStamps();
     } else {
         alert('パスワードが正しくありません。');
