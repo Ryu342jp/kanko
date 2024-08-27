@@ -33,6 +33,7 @@ function updateStamps() {
             newStamp.setAttribute('data-id', stampId);
 
             stampContainer.appendChild(newStamp);
+            console.log(`追加されたスタンプID: ${stampId}, 画像: ${stampInfo.image}`); // デバッグ用
         }
     });
 
@@ -63,6 +64,7 @@ function resetStamps() {
 }
 
 function collectStamp(id) {
+    console.log(`収集するスタンプID: ${id}`); // デバッグ用
     const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
     if (!stamps.includes(id)) {
         stamps.push(id);
