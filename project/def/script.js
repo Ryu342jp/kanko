@@ -27,16 +27,13 @@ function updateStamps() {
     const stampContainer = document.getElementById('stamp-container');
     stampContainer.innerHTML = '';
     
-    customStampIDs.forEach(id => {
+    collectedStamps.forEach(id => {
         const stampInfo = stampData.find(stamp => stamp.id === id.toString());
         if (stampInfo) {
             const newStamp = document.createElement('div');
-            newStamp.className = 'stamp';
-            if (collectedStamps.includes(id.toString())) {
-                newStamp.classList.add('collected');
-                newStamp.style.backgroundImage = `url(${stampInfo.image})`;
-                newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id] || 0}</div>`;
-            }
+            newStamp.className = 'stamp collected';
+            newStamp.style.backgroundImage = `url(${stampInfo.image})`;
+            newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id] || 1}</div>`;
             newStamp.setAttribute('data-id', id);
             stampContainer.appendChild(newStamp);
         }
@@ -62,9 +59,10 @@ function collectStamp(id) {
     
     if (!collectedStamps.includes(id)) {
         if (!stampCounts[id]) {
-            stampCounts[id] = 0;
+            stampCounts[id] = 1;
+        } else {
+            stampCounts[id]++;
         }
-        stampCounts[id]++;
         collectedStamps.push(id);
         localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
         localStorage.setItem('collectedStamps', JSON.stringify(collectedStamps));
@@ -72,7 +70,15 @@ function collectStamp(id) {
         updatePoints();
         alert(`スタンプを獲得しました！獲得回数: ${stampCounts[id]}`);
     } else {
-        alert('このスタンプは既に獲得済みです。リセットしてから再度獲得してください。');
+        if (!stampCounts[id]) {
+            stampCounts[id] = 1;
+        } else {
+            stampCounts[id]++;
+        }
+        localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
+        updateStamps();
+        updatePoints();
+        alert(`スタンプの獲得回数が増えました！獲得回数: ${stampCounts[id]}`);
     }
 }
 
@@ -161,37 +167,37 @@ let scrollLeft;
 const container = document.querySelector('#container');
 
 container.addEventListener('mousedown', (e) => {
-  startX = e.pageX - container.offsetLeft;
-  scrollLeft = container.scrollLeft;
-  container.style.cursor = 'grabbing';
-  container.style.userSelect = 'none';
+    startX = e.pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
+    container.style.cursor = 'grabbing';
+    container.style.userSelect = 'none';
 });
 
 container.addEventListener('mouseleave', () => {
-  container.style.cursor = 'auto';
-  container.style.userSelect = 'auto';
+    container.style.cursor = 'auto';
+    container.style.userSelect = 'auto';
 });
 
 container.addEventListener('mouseup', () => {
-  container.style.cursor = 'auto';
-  container.style.userSelect = 'auto';
+    container.style.cursor = 'auto';
+    container.style.userSelect = 'auto';
 });
 
 container.addEventListener('mousemove', (e) => {
-  if (startX !== undefined) {
-    const x = e.pageX - container.offsetLeft;
-    const walk = (x - startX) * 2;
-    container.scrollLeft = scrollLeft - walk;
-  }
+    if (startX !== undefined) {
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 2;
+        container.scrollLeft = scrollLeft - walk;
+    }
 });
 
 container.addEventListener('touchstart', (e) => {
-  startX = e.touches[0].pageX - container.offsetLeft;
-  scrollLeft = container.scrollLeft;
+    startX = e.touches[0].pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
 });
 
 container.addEventListener('touchmove', (e) => {
-  const x = e.touches[0].pageX - container.offsetLeft;
-  const walk = (x - startX) * 2;
-  container.scrollLeft = scrollLeft - walk;
+    const x = e.touches[0].pageX - container.offsetLeft;
+    const walk = (x - startX) * 2;
+    container.scrollLeft = scrollLeft - walk;
 });
