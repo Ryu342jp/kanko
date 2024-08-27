@@ -27,13 +27,16 @@ function updateStamps() {
     const stampContainer = document.getElementById('stamp-container');
     stampContainer.innerHTML = '';
     
-    collectedStamps.forEach(id => {
+    customStampIDs.forEach(id => {
         const stampInfo = stampData.find(stamp => stamp.id === id.toString());
         if (stampInfo) {
             const newStamp = document.createElement('div');
-            newStamp.className = 'stamp collected';
-            newStamp.style.backgroundImage = `url(${stampInfo.image})`;
-            newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id] || 1}</div>`;
+            newStamp.className = 'stamp';
+            if (collectedStamps.includes(id.toString()) || stampCounts[id] > 0) {
+                newStamp.classList.add('collected');
+                newStamp.style.backgroundImage = `url(${stampInfo.image})`;
+                newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id] || 0}</div>`;
+            }
             newStamp.setAttribute('data-id', id);
             stampContainer.appendChild(newStamp);
         }
@@ -56,7 +59,6 @@ function updatePoints() {
 function collectStamp(id) {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
     const collectedStamps = JSON.parse(localStorage.getItem('collectedStamps') || '[]');
-    const lastResetTime = localStorage.getItem('lastResetTime') || '0';
     
     if (!collectedStamps.includes(id)) {
         if (!stampCounts[id]) {
@@ -67,14 +69,19 @@ function collectStamp(id) {
         collectedStamps.push(id);
         localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
         localStorage.setItem('collectedStamps', JSON.stringify(collectedStamps));
-        localStorage.setItem('lastResetTime', Date.now().toString());
         updateStamps();
         updatePoints();
         alert(`スタンプを獲得しました！獲得回数: ${stampCounts[id]}`);
-    } else if (Date.now() - parseInt(lastResetTime) < 24 * 60 * 60 * 1000) {
-        alert('このスタンプは既に獲得済みです。リセット後に再度獲得できます。');
     } else {
-        alert('このスタンプは既に獲得済みです。リセットしてから再度獲得してください。');
+        if (!stampCounts[id]) {
+            stampCounts[id] = 1;
+        } else {
+            stampCounts[id]++;
+        }
+        localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
+        updateStamps();
+        updatePoints();
+        alert(`スタンプの獲得回数が増えました！獲得回数: ${stampCounts[id]}`);
     }
 }
 
@@ -141,8 +148,19 @@ function usePoints() {
 }
 
 function resetStamps() {
+    const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
+    localStorage.removeItem('collectedStamps');
     localStorage.setItem('points', '0');
-    localStorage.setItem('lastResetTime', Date.now().toString());
+    
+    // スタンプの獲得回数をリセットせずに保持
+    Object.keys(stampCounts).forEach(id => {
+        if (stampCounts[id] > 0) {
+            stampCounts[id] = 0;
+        }
+    });
+    localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
+    
+    updateStamps();
     updatePoints();
     alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。スタンプの表示と獲得回数は保持されています。');
 }
