@@ -61,7 +61,7 @@ function showCompletionCode() {
 
 function resetStamps() {
     const password = document.getElementById('staff-password').value;
-    if (password === 'staffpass123') {
+    if (password === '0808') {
         localStorage.removeItem('stamps');
         localStorage.setItem('points', '0');
         updateStamps();
