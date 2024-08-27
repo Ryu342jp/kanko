@@ -20,6 +20,9 @@ function initializeStamps() {
     if (!localStorage.getItem('stampCounts')) {
         localStorage.setItem('stampCounts', JSON.stringify({}));
     }
+    if (!localStorage.getItem('lastStampDate')) {
+        localStorage.setItem('lastStampDate', JSON.stringify({}));
+    }
     updateStamps();
     updatePoints();
 }
@@ -42,6 +45,7 @@ function updateStamps() {
     });
 }
 
+
 function updatePoints() {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
     let totalPoints = 0;
@@ -57,46 +61,25 @@ function updatePoints() {
 
 function collectStamp(id) {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
+    const lastStampDate = JSON.parse(localStorage.getItem('lastStampDate') || '{}');
+    const today = new Date().toDateString();
+
+    if (lastStampDate[id] === today) {
+        alert('このスタンプは本日すでに獲得しています。リセット後に再度獲得できます。');
+        return;
+    }
+
     if (!stampCounts[id]) {
         stampCounts[id] = 0;
     }
     stampCounts[id]++;
+    lastStampDate[id] = today;
+
     localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
+    localStorage.setItem('lastStampDate', JSON.stringify(lastStampDate));
     updateStamps();
     updatePoints();
     alert(`スタンプを獲得しました！獲得回数: ${stampCounts[id]}`);
-}
-
-function checkLocation() {
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const userLat = position.coords.latitude;
-            const userLon = position.coords.longitude;
-            let isInRange = false;
-            for (const target of targetLocations) {
-                const distance = calculateDistance(userLat, userLon, target.lat, target.lon);
-                if (distance <= maxDistance) {
-                    isInRange = true;
-                    break;
-                }
-            }
-            if (isInRange) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const stampId = urlParams.get('id');
-                if (stampId && customStampIDs.includes(parseInt(stampId))) {
-                    collectStamp(stampId);
-                } else {
-                    alert("有効な範囲内にいますが、スタンプIDが指定されていないか無効です。");
-                }
-            } else {
-                alert("指定された範囲内にいません。スタンプを収集するには、指定された場所に移動してください。");
-            }
-        }, function(error) {
-            alert("位置情報の取得に失敗しました: " + error.message + "\n位置情報の許可を確認し、ページをリロードしてください。");
-        });
-    } else {
-        alert("お使いのブラウザは位置情報をサポートしていません。");
-    }
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -131,24 +114,12 @@ function usePoints() {
 
 function resetStamps() {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
-    Object.keys(stampCounts).forEach(id => {
-        stampCounts[id] = 0;
-    });
-    localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
+    localStorage.removeItem('lastStampDate');
     localStorage.setItem('points', '0');
     updateStamps();
     updatePoints();
-    alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。');
+    alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。スタンプの表示と獲得回数は保持されています。');
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    initializeStamps();
-    const urlParams = new URLSearchParams(window.location.search);
-    const stampId = urlParams.get('id');
-    if (stampId) {
-        checkLocation();
-    }
-});
 
 // スライダー機能
 let startX;
