@@ -90,7 +90,7 @@ function handleTouchEnd(e) {
     const touchEndTime = Date.now();
     const touchDuration = touchEndTime - touchStartTime;
     
-    if (touchDuration < 300) { // 短いタッチの場合はスピンを開始
+    if (touchDuration < 30000) { // 短いタッチの場合はスピンを開始
         startSpin();
     }
 }
