@@ -17,6 +17,9 @@ const targetLocations = [
 const maxDistance = 200;
 
 function initializeStamps() {
+    if (!localStorage.getItem('stampCounts')) {
+        localStorage.setItem('stampCounts', JSON.stringify({}));
+    }
     updateStamps();
     updatePoints();
 }
@@ -38,7 +41,6 @@ function updateStamps() {
         }
     });
 }
-
 
 function updatePoints() {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
