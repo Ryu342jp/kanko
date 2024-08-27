@@ -8,38 +8,17 @@
 </head>
 <body>
     <h1>デジタルスタンプラリー</h1>
-  <button onclick="checkLocation()">現在位置をチェック</button>
-  <div id="container">
-    <div id="stamp-container">
-      <div class="stamp" data-id="11501">
-        <img src="https://ryu342jp.github.io/kanko/project/stamp-01-05.png" alt="スタンプ1" class="stamp-image stamp-bw">
-        <img src="https://ryu342jp.github.io/kanko/project/stamp-01-07.png" alt="スタンプ1" class="stamp-image stamp-color">
-      </div>
-      <div class="stamp" data-id="21802">
-        <img src="https://ryu342jp.github.io/kanko/project/stamp-01-06.png" alt="スタンプ2" class="stamp-image stamp-bw">
-        <img src="stamp2_color.png" alt="スタンプ2" class="stamp-image stamp-color">
-      </div>
-      <div class="stamp" data-id="36903">
-            <span class="stamp-number">3</span>
-            <img src="st3.png" alt="スタンプ3" class="stamp-image">
-      </div>
-      <div class="stamp" data-id="45804">
-            <span class="stamp-number">4</span>
-            <img src="st4.png" alt="スタンプ4" class="stamp-image">
-      </div>
-      <div class="stamp" data-id="50085">
-          <span class="stamp-number">5</span>
-          <img src="st5.png" alt="スタンプ5" class="stamp-image">
-      </div>
+    <button onclick="checkLocation()">現在位置をチェック</button>
+    <div id="container">
+        <div id="stamp-container"></div>
     </div>
-  </div>
     <div id="completion-button" style="display: none;">
-    <button onclick="showCompletionCode()">スタッフに確認してもらう</button>
-</div>
-<div id="staff-reset" style="display: none;">
-    <input type="password" id="staff-password" placeholder="スタッフパスワード">
-    <button onclick="resetStamps()">スタンプをリセット</button>
-</div>
+        <button onclick="showCompletionCode()">スタッフに確認してもらう</button>
+    </div>
+    <div id="staff-reset" style="display: none;">
+        <input type="password" id="staff-password" placeholder="スタッフパスワード">
+        <button onclick="resetStamps()">スタンプをリセット</button>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

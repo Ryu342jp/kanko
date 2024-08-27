@@ -8,25 +8,24 @@ body {
 
 #container {
     position: relative;
-    height: 50vh; /* ビューポートの高さに合わせる */
-    overflow-y: hidden; /* 縦スクロールは許可 */
+    margin-top: 45%;
+    height: auto; /* ビューポートの高さに合わせる */
+    overflow-x: auto; /* 横スクロールを許可 */
+    overflow-y: hidden; /* 縦スクロールを禁止 */
 }
 
 #stamp-container {
     display: flex;
     gap: 10px;
     height: 300px;
-    position: absolute;
+    position: relative; /* absolute → relative */
     padding: 0;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
     margin: auto;
     min-width: 100%;
     box-sizing: border-box;
     align-items: center;
     white-space: nowrap;
+    scroll-behavior: smooth; /* スムーズスクロールを適用 */
     transform: translateX(0);
     transition: transform 0.3s ease;
 }
@@ -138,8 +137,10 @@ body {
     }
 }
 
-/* 大きな画面の場合 */
 @media (min-width: 1025px) {
+    #container {
+      margin-top: 45%;
+    }
     #stamp-container {
         height: 360px; /* スタンプコンテナの高さを調整 */
     }
