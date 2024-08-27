@@ -3,15 +3,6 @@ let prizes = [
     { name: 'はずれ', count: 1000, color: '#ffffff' }
 ];
 
-// 音声ファイルの読み込み
-function preloadAudio() {
-    garaGaraSound = new Audio('gara.mp3');
-    endSound = new Audio('kara.mp3');
-}
-
-// ページ読み込み時に音声をプリロード
-window.addEventListener('load', preloadAudio);
-
 // ローカルストレージから保存されたデータを読み込む
 const savedPrizes = localStorage.getItem('prizes');
 if (savedPrizes) {
@@ -31,6 +22,22 @@ let isSpinning = false;
 let startX, startY;
 let isDragging = false;
 let currentRotation = 0;
+
+// 音声ファイルの読み込み
+function preloadAudio() {
+    garaGaraSound = new Audio('gara.mp3');
+    endSound = new Audio('kara.mp3');
+    
+    // がらがらの音の長さを確認
+    garaGaraSound.addEventListener('loadedmetadata', () => {
+        if (garaGaraSound.duration !== 3) {
+            console.warn('がらがらの音の長さが3秒ではありません。音声ファイルを確認してください。');
+        }
+    });
+}
+
+// ページ読み込み時に音声をプリロード
+window.addEventListener('load', preloadAudio);
 
 garapon.addEventListener('touchstart', handleTouchStart);
 garapon.addEventListener('touchmove', handleTouchMove);
