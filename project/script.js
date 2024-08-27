@@ -12,7 +12,7 @@ const targetLocations = [
     { lat: 32.80864261545204, lon: 129.87437337696068 },
     { lat: 32.74274063579224, lon: 129.87767150491538 }
 ];
-const maxDistance = 200;
+const maxDistance = 200000;
 
 function initializeStamps() {
     updateStamps();
