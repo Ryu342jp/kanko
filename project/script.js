@@ -67,7 +67,7 @@ function collectStamp(id) {
     if (!stamps.includes(id)) {
         stamps.push(id);
         localStorage.setItem('stamps', JSON.stringify(stamps));
-        updateStamps();
+        updateStamps();  // スタンプを更新する
         const stampIndex = customStampIDs.indexOf(id) + 1;
         alert(`スタンプ${stampIndex}を獲得しました！`);
     } else {
@@ -94,7 +94,7 @@ function checkLocation() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const stampId = urlParams.get('id');
                 if (stampId && customStampIDs.includes(parseInt(stampId))) {
-                    collectStamp(parseInt(stampId));
+                    collectStamp(parseInt(stampId));  // スタンプを収集
                 } else {
                     alert("有効な範囲内にいますが、スタンプIDが指定されていないか無効です。");
                 }
@@ -125,8 +125,8 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    initializeStamps();
-    checkLocation();
+    initializeStamps(); // スタンプの初期化
+    checkLocation();    // 位置情報のチェック
 });
 
 // スライダー機能
