@@ -82,6 +82,47 @@ function collectStamp(id) {
     alert(`スタンプを獲得しました！獲得回数: ${stampCounts[id]}`);
 }
 
+function checkLocation() {
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const userLat = position.coords.latitude;
+            const userLon = position.coords.longitude;
+            let isInRange = false;
+            for (const target of targetLocations) {
+                const distance = calculateDistance(userLat, userLon, target.lat, target.lon);
+                if (distance <= maxDistance) {
+                    isInRange = true;
+                    break;
+                }
+            }
+            if (isInRange) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const stampId = urlParams.get('id');
+                if (stampId && customStampIDs.includes(parseInt(stampId))) {
+                    collectStamp(stampId);
+                } else {
+                    alert("有効な範囲内にいますが、スタンプIDが指定されていないか無効です。");
+                }
+            } else {
+                alert("指定された範囲内にいません。スタンプを収集するには、指定された場所に移動してください。");
+            }
+        }, function(error) {
+            alert("位置情報の取得に失敗しました: " + error.message + "\n位置情報の許可を確認し、ページをリロードしてください。");
+        });
+    } else {
+        alert("お使いのブラウザは位置情報をサポートしていません。");
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeStamps();
+    const urlParams = new URLSearchParams(window.location.search);
+    const stampId = urlParams.get('id');
+    if (stampId) {
+        checkLocation();
+    }
+});
+
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3;
     const φ1 = lat1 * Math.PI / 180;
