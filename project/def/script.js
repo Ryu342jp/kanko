@@ -155,4 +155,43 @@ document.addEventListener('DOMContentLoaded', function() {
     checkLocation();
 });
 
-// スライダー機能（変更なし）
+// スライダー機能
+let startX;
+let scrollLeft;
+const container = document.querySelector('#container');
+
+container.addEventListener('mousedown', (e) => {
+  startX = e.pageX - container.offsetLeft;
+  scrollLeft = container.scrollLeft;
+  container.style.cursor = 'grabbing';
+  container.style.userSelect = 'none';
+});
+
+container.addEventListener('mouseleave', () => {
+  container.style.cursor = 'auto';
+  container.style.userSelect = 'auto';
+});
+
+container.addEventListener('mouseup', () => {
+  container.style.cursor = 'auto';
+  container.style.userSelect = 'auto';
+});
+
+container.addEventListener('mousemove', (e) => {
+  if (startX !== undefined) {
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - startX) * 2;
+    container.scrollLeft = scrollLeft - walk;
+  }
+});
+
+container.addEventListener('touchstart', (e) => {
+  startX = e.touches[0].pageX - container.offsetLeft;
+  scrollLeft = container.scrollLeft;
+});
+
+container.addEventListener('touchmove', (e) => {
+  const x = e.touches[0].pageX - container.offsetLeft;
+  const walk = (x - startX) * 2;
+  container.scrollLeft = scrollLeft - walk;
+});
