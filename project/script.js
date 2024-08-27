@@ -20,8 +20,10 @@ function updateStamps() {
         if (stamps.includes(stampId)) {
             stamp.classList.add('collected');
             if (colorImg && colorImg.complete && colorImg.naturalWidth !== 0) {
+                // 画像データが正常に読み込まれている場合
                 stamp.classList.add('has-image');
             } else {
+                // 画像データが読み込めない場合
                 stamp.classList.remove('has-image');
                 stamp.style.backgroundColor = '#4CAF50';
                 stamp.style.color = 'white';
@@ -34,6 +36,7 @@ function updateStamps() {
         }
     });
 
+    // すべてのスタンプが収集されたかチェック
     if (stamps.length === customStampIDs.length) {
         document.getElementById('completion-button').style.display = 'block';
     } else {
@@ -49,7 +52,7 @@ function showCompletionCode() {
 
 function resetStamps() {
     const password = document.getElementById('staff-password').value;
-    if (password === 'staffpass123') {
+    if (password === 'staffpass123') { // 実際の運用では、より安全なパスワード認証方法を使用してください
         localStorage.removeItem('stamps');
         updateStamps();
         alert('スタンプがリセットされました。');
@@ -109,7 +112,7 @@ function checkLocation() {
 
 // 2点間の距離をメートル単位で計算する関数
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371e3;
+    const R = 6371e3; // 地球の半径（メートル）
     const φ1 = lat1 * Math.PI / 180;
     const φ2 = lat2 * Math.PI / 180;
     const Δφ = (lat2 - lat1) * Math.PI / 180;
@@ -120,105 +123,82 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
               Math.sin(Δλ/2) * Math.sin(Δλ/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-    return R * c;
+    return R * c; // メートル単位の距離
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeStamps();
     checkLocation();
-
-    // QRコードから読み込んだIDでスタンプを追加
-    const stampContainer = document.getElementById('stamp-container');
-
-    // スタンプIDと画像のペアを定義
-    const stampData = [
-        { id: '12345', image: 'image/image01.jpg' },
-        { id: '67890', image: 'image/image02.jpg' },
-        { id: '24680', image: 'image/image03.jpg' },
-        // 他のスタンプデータを追加
-    ];
-
-    function getStampIdsFromUrl() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const ids = urlParams.get('id');
-        return ids ? ids.split(',') : [];
-    }
-
-    function getStoredStampIds() {
-        const storedIds = localStorage.getItem('stampIds');
-        return storedIds ? storedIds.split(',') : [];
-    }
-
-    function storeStampIds(stampIds) {
-        localStorage.setItem('stampIds', stampIds.join(','));
-    }
-
-    function displayStamp(stampId) {
-        const stampInfo = stampData.find(stamp => stamp.id === stampId);
-        if (!stampInfo) return;
-
-        const newStamp = document.createElement('div');
-        newStamp.className = 'stamp';
-        newStamp.style.backgroundImage = `url(${stampInfo.image})`;
-        newStamp.style.display = 'block';
-        newStamp.setAttribute('data-id', stampId);
-
-        stampContainer.appendChild(newStamp);
-        console.log(`スタンプID: ${stampId}, 画像: ${stampInfo.image}`);
-    }
-
-    // URLからスタンプIDを取得して表示
-    const newStampIds = getStampIdsFromUrl();
-    const storedStampIds = getStoredStampIds();
-
-    newStampIds.forEach(stampId => {
-        if (!storedStampIds.includes(stampId)) {
-            displayStamp(stampId);
-            storedStampIds.push(stampId);
-        }
-    });
-
-    storeStampIds(storedStampIds);
 });
 
-//スライダー機能
+
+//スライダー
+const stampContainer = document.getElementById('stamp-container');
+
+let isDown = false;
 let startX;
 let scrollLeft;
 
-const container = document.querySelector('#container');
-
-container.addEventListener('mousedown', (e) => {
-    startX = e.pageX - container.offsetLeft;
-    scrollLeft = container.scrollLeft;
-    container.style.cursor = 'grabbing';
-    container.style.userSelect = 'none';
+stampContainer.addEventListener('mousedown', (e) => {
+    isDown = true;
+    stampContainer.classList.add('active');
+    startX = e.pageX - stampContainer.offsetLeft;
+    scrollLeft = stampContainer.scrollLeft;
 });
 
-container.addEventListener('mouseleave', () => {
-    container.style.cursor = 'auto';
-    container.style.userSelect = 'auto';
+stampContainer.addEventListener('mouseleave', () => {
+    isDown = false;
+    stampContainer.classList.remove('active');
 });
 
-container.addEventListener('mouseup', () => {
-    container.style.cursor = 'auto';
-    container.style.userSelect = 'auto';
+stampContainer.addEventListener('mouseup', () => {
+    isDown = false;
+    stampContainer.classList.remove('active');
 });
 
-container.addEventListener('mousemove', (e) => {
-    if (startX !== undefined) {
-        const x = e.pageX - container.offsetLeft;
-        const walk = (x - startX) * 2;
-        container.scrollLeft = scrollLeft - walk;
+stampContainer.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - stampContainer.offsetLeft;
+    const walk = (startX - x) * 3; // スワイプの方向を逆にする
+    const newScrollLeft = scrollLeft + walk;
+
+    // スライドを両端で止める
+    if (newScrollLeft < 0) {
+        stampContainer.style.transform = `translateX(0px)`;
+    } else if (newScrollLeft > stampContainer.scrollWidth - stampContainer.clientWidth) {
+        const maxOffset = stampContainer.scrollWidth - stampContainer.clientWidth;
+        stampContainer.style.transform = `translateX(-${maxOffset}px)`;
+    } else {
+        stampContainer.style.transform = `translateX(-${newScrollLeft}px)`;
     }
 });
 
-container.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].pageX - container.offsetLeft;
-    scrollLeft = container.scrollLeft;
+stampContainer.addEventListener('touchstart', (e) => {
+    isDown = true;
+    startX = e.touches[0].pageX - stampContainer.offsetLeft;
+    scrollLeft = stampContainer.scrollLeft;
 });
 
-container.addEventListener('touchmove', (e) => {
-    const x = e.touches[0].pageX - container.offsetLeft;
-    const walk = (x - startX) * 2;
-    container.scrollLeft = scrollLeft - walk;
+stampContainer.addEventListener('touchend', () => {
+    isDown = false;
+});
+
+stampContainer.addEventListener('touchmove', (e) => {
+    if (!isDown) return;
+    e.preventDefault(); // 横スクロールが画面全体に及ばないようにする
+    const x = e.touches[0].pageX - stampContainer.offsetLeft;
+    const walk = (startX - x) * 3; // スワイプの方向を逆にする
+    const newScrollLeft = scrollLeft + walk;
+
+    // スライドを両端で止める
+    if (newScrollLeft < 0) {
+        stampContainer.style.transform = `translateX(0px)`;
+    } else if (newScrollLeft > stampContainer.scrollWidth - stampContainer.clientWidth) {
+        const maxOffset = stampContainer.scrollWidth - stampContainer.clientWidth;
+        stampContainer.style.transform = `translateX(-${maxOffset}px)`;
+    } else {
+        stampContainer.style.transform = `translateX(-${newScrollLeft}px)`;
+    }
 });
