@@ -6,6 +6,17 @@ body {
     overflow-x: hidden;
 }
 
+.stamp-count {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 2px 5px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
 #container {
     position: relative;
     margin-top: 20px;
