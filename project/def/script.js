@@ -23,6 +23,7 @@ function initializeStamps() {
 
 function updateStamps() {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
+    const collectedStamps = JSON.parse(localStorage.getItem('collectedStamps') || '[]');
     const stampContainer = document.getElementById('stamp-container');
     stampContainer.innerHTML = '';
     
@@ -31,11 +32,11 @@ function updateStamps() {
         if (stampInfo) {
             const newStamp = document.createElement('div');
             newStamp.className = 'stamp';
-            if (stampCounts[id] && stampCounts[id] > 0) {
+            if (collectedStamps.includes(id.toString())) {
                 newStamp.classList.add('collected');
+                newStamp.style.backgroundImage = `url(${stampInfo.image})`;
+                newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id] || 0}</div>`;
             }
-            newStamp.style.backgroundImage = `url(${stampInfo.image})`;
-            newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id] || 0}</div>`;
             newStamp.setAttribute('data-id', id);
             stampContainer.appendChild(newStamp);
         }
@@ -43,12 +44,12 @@ function updateStamps() {
 }
 
 function updatePoints() {
-    const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
+    const collectedStamps = JSON.parse(localStorage.getItem('collectedStamps') || '[]');
     let totalPoints = 0;
-    Object.entries(stampCounts).forEach(([id, count]) => {
+    collectedStamps.forEach(id => {
         const stamp = stampData.find(s => s.id === id);
         if (stamp) {
-            totalPoints += stamp.points * count;
+            totalPoints += stamp.points;
         }
     });
     localStorage.setItem('points', totalPoints);
@@ -57,14 +58,22 @@ function updatePoints() {
 
 function collectStamp(id) {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
-    if (!stampCounts[id]) {
-        stampCounts[id] = 0;
+    const collectedStamps = JSON.parse(localStorage.getItem('collectedStamps') || '[]');
+    
+    if (!collectedStamps.includes(id)) {
+        if (!stampCounts[id]) {
+            stampCounts[id] = 0;
+        }
+        stampCounts[id]++;
+        collectedStamps.push(id);
+        localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
+        localStorage.setItem('collectedStamps', JSON.stringify(collectedStamps));
+        updateStamps();
+        updatePoints();
+        alert(`スタンプを獲得しました！獲得回数: ${stampCounts[id]}`);
+    } else {
+        alert('このスタンプは既に獲得済みです。リセットしてから再度獲得してください。');
     }
-    stampCounts[id]++;
-    localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
-    updateStamps();
-    updatePoints();
-    alert(`スタンプを獲得しました！獲得回数: ${stampCounts[id]}`);
 }
 
 function checkLocation() {
@@ -130,11 +139,11 @@ function usePoints() {
 }
 
 function resetStamps() {
-    localStorage.removeItem('stampCounts');
+    localStorage.removeItem('collectedStamps');
     localStorage.setItem('points', '0');
     updateStamps();
     updatePoints();
-    alert('スタンプとポイントがリセットされました。');
+    alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。スタンプの獲得回数は保持されています。');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -145,6 +154,8 @@ document.addEventListener('DOMContentLoaded', function() {
         checkLocation();
     }
 });
+
+// スライダー機能（変更なし）
 
 // スライダー機能
 let startX;
