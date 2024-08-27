@@ -48,24 +48,29 @@ function setupEventListeners() {
   });
 }
 
+let currentRotation = 0;
+let startAngle = 0;
+
 function handleTouchStart(e) {
   if (isSpinning) return;
   isDragging = true;
-  startX = e.touches[0].clientX;
-  startY = e.touches[0].clientY;
+  const touch = e.touches[0];
+  startAngle = Math.atan2(touch.clientY - 150, touch.clientX - 150);
 }
 
 function handleTouchMove(e) {
   if (!isDragging || isSpinning) return;
-  const currentX = e.touches[0].clientX;
-  const currentY = e.touches[0].clientY;
-  const deltaX = currentX - startX;
-  const deltaY = currentY - startY;
-  const rotation = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+  const touch = e.touches[0];
+  const currentAngle = Math.atan2(touch.clientY - 150, touch.clientX - 150);
+  let rotation = (currentAngle - startAngle) * (180 / Math.PI);
+  
+  // 回転の連続性を保つ
+  if (rotation < 0) rotation += 360;
+  if (rotation > 180) rotation -= 360;
+  
   currentRotation += rotation;
   octagon.style.transform = `rotate(${currentRotation}deg)`;
-  startX = currentX;
-  startY = currentY;
+  startAngle = currentAngle;
 }
 
 function handleTouchEnd() {
@@ -73,6 +78,11 @@ function handleTouchEnd() {
   isDragging = false;
   startSpin();
 }
+
+// イベントリスナーの設定
+garapon.addEventListener('touchstart', handleTouchStart);
+garapon.addEventListener('touchmove', handleTouchMove);
+garapon.addEventListener('touchend', handleTouchEnd);
 
 function startSpin() {
   if (isSpinning) return;
