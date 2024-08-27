@@ -1,11 +1,10 @@
 const customStampIDs = [11501, 21802, 36903, 45804, 50085];
-
 const stampData = [
-    { id: '11501', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-05.png', points: 10 },
-    { id: '21802', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-06.png', points: 15 },
-    { id: '36903', image: 'st3.png', points: 20 },
-    { id: '45804', image: 'st4.png', points: 25 },
-    { id: '50085', image: 'st5.png', points: 30 },
+    { id: '11501', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-05.png' },
+    { id: '21802', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-06.png' },
+    { id: '36903', image: 'st3.png' },
+    { id: '45804', image: 'st4.png' },
+    { id: '50085', image: 'st5.png' },
 ];
 
 const targetLocations = [
@@ -13,58 +12,69 @@ const targetLocations = [
     { lat: 32.80864261545204, lon: 129.87437337696068 },
     { lat: 32.74274063579224, lon: 129.87767150491538 }
 ];
-
-const maxDistance = 200;
+const maxDistance = 200000;
 
 function initializeStamps() {
     updateStamps();
-    updatePoints();
 }
 
 function updateStamps() {
-    const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
+    const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
     const stampContainer = document.getElementById('stamp-container');
-    stampContainer.innerHTML = '';
-    
-    customStampIDs.forEach(id => {
-        const stampInfo = stampData.find(stamp => stamp.id === id.toString());
+    stampContainer.innerHTML = ''; // コンテナをクリア
+
+    stamps.forEach(stampId => {
+        const stampInfo = stampData.find(stamp => stamp.id === stampId);
         if (stampInfo) {
             const newStamp = document.createElement('div');
-            newStamp.className = 'stamp';
-            if (stampCounts[id] && stampCounts[id] > 0) {
-                newStamp.classList.add('collected');
-            }
+            newStamp.className = 'stamp collected';
             newStamp.style.backgroundImage = `url(${stampInfo.image})`;
-            newStamp.innerHTML = `<div class="stamp-count">${stampCounts[id] || 0}</div>`;
-            newStamp.setAttribute('data-id', id);
+            newStamp.style.display = 'block';
+            newStamp.setAttribute('data-id', stampId);
+
             stampContainer.appendChild(newStamp);
+            console.log(`追加されたスタンプID: ${stampId}, 画像: ${stampInfo.image}`); // デバッグ用
         }
     });
+
+    if (stamps.length === customStampIDs.length) {
+        document.getElementById('completion-button').style.display = 'block';
+    } else {
+        document.getElementById('completion-button').style.display = 'none';
+    }
 }
 
-function updatePoints() {
-    const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
-    let totalPoints = 0;
-    Object.entries(stampCounts).forEach(([id, count]) => {
-        const stamp = stampData.find(s => s.id === id);
-        if (stamp) {
-            totalPoints += stamp.points * count;
-        }
-    });
-    localStorage.setItem('points', totalPoints);
-    document.getElementById('point-display').textContent = totalPoints;
+function showCompletionCode() {
+    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    alert(`完了コード: ${code}\nこのコードをスタッフに見せてください。`);
+    document.getElementById('staff-reset').style.display = 'block';
+}
+
+function resetStamps() {
+    const password = document.getElementById('staff-password').value;
+    if (password === 'staffpass123') {
+        localStorage.removeItem('stamps');
+        updateStamps();
+        alert('スタンプがリセットされました。');
+        document.getElementById('staff-reset').style.display = 'none';
+        document.getElementById('completion-button').style.display = 'none';
+    } else {
+        alert('パスワードが正しくありません。');
+    }
 }
 
 function collectStamp(id) {
-    const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
-    if (!stampCounts[id]) {
-        stampCounts[id] = 0;
+    console.log(`収集するスタンプID: ${id}`); // デバッグ用
+    const stamps = JSON.parse(localStorage.getItem('stamps') || '[]');
+    if (!stamps.includes(id)) {
+        stamps.push(id);
+        localStorage.setItem('stamps', JSON.stringify(stamps));
+        updateStamps();  // スタンプを更新する
+        const stampIndex = customStampIDs.indexOf(id) + 1;
+        alert(`スタンプ${stampIndex}を獲得しました！`);
+    } else {
+        alert('このスタンプは既に獲得済みです。');
     }
-    stampCounts[id]++;
-    localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
-    updateStamps();
-    updatePoints();
-    alert(`スタンプを獲得しました！獲得回数: ${stampCounts[id]}`);
 }
 
 function checkLocation() {
@@ -72,6 +82,7 @@ function checkLocation() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const userLat = position.coords.latitude;
             const userLon = position.coords.longitude;
+            
             let isInRange = false;
             for (const target of targetLocations) {
                 const distance = calculateDistance(userLat, userLon, target.lat, target.lon);
@@ -80,11 +91,12 @@ function checkLocation() {
                     break;
                 }
             }
+            
             if (isInRange) {
                 const urlParams = new URLSearchParams(window.location.search);
                 const stampId = urlParams.get('id');
                 if (stampId && customStampIDs.includes(parseInt(stampId))) {
-                    collectStamp(stampId);
+                    collectStamp(parseInt(stampId));  // スタンプを収集
                 } else {
                     alert("有効な範囲内にいますが、スタンプIDが指定されていないか無効です。");
                 }
@@ -105,45 +117,18 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     const φ2 = lat2 * Math.PI / 180;
     const Δφ = (lat2 - lat1) * Math.PI / 180;
     const Δλ = (lon2 - lon1) * Math.PI / 180;
+
     const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
               Math.cos(φ1) * Math.cos(φ2) *
               Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
     return R * c;
 }
 
-function openMap() {
-    window.open('https://ryu342jp.github.io/kanko/project/map.html', '_blank');
-}
-
-function goToExchange() {
-    window.open('https://maps.app.goo.gl/4fb9KNVRu3p2RAap9', '_blank');
-}
-
-function usePoints() {
-    const password = prompt('パスワードを入力してください：');
-    if (password === 'staffpass123') {
-        resetStamps();
-    } else {
-        alert('パスワードが正しくありません。');
-    }
-}
-
-function resetStamps() {
-    localStorage.removeItem('stampCounts');
-    localStorage.setItem('points', '0');
-    updateStamps();
-    updatePoints();
-    alert('スタンプとポイントがリセットされました。');
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-    initializeStamps();
-    const urlParams = new URLSearchParams(window.location.search);
-    const stampId = urlParams.get('id');
-    if (stampId) {
-        checkLocation();
-    }
+    initializeStamps(); // スタンプの初期化
+    checkLocation();    // 位置情報のチェック
 });
 
 // スライダー機能
@@ -152,37 +137,37 @@ let scrollLeft;
 const container = document.querySelector('#container');
 
 container.addEventListener('mousedown', (e) => {
-  startX = e.pageX - container.offsetLeft;
-  scrollLeft = container.scrollLeft;
-  container.style.cursor = 'grabbing';
-  container.style.userSelect = 'none';
+    startX = e.pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
+    container.style.cursor = 'grabbing';
+    container.style.userSelect = 'none';
 });
 
 container.addEventListener('mouseleave', () => {
-  container.style.cursor = 'auto';
-  container.style.userSelect = 'auto';
+    container.style.cursor = 'auto';
+    container.style.userSelect = 'auto';
 });
 
 container.addEventListener('mouseup', () => {
-  container.style.cursor = 'auto';
-  container.style.userSelect = 'auto';
+    container.style.cursor = 'auto';
+    container.style.userSelect = 'auto';
 });
 
 container.addEventListener('mousemove', (e) => {
-  if (startX !== undefined) {
-    const x = e.pageX - container.offsetLeft;
-    const walk = (x - startX) * 2;
-    container.scrollLeft = scrollLeft - walk;
-  }
+    if (startX !== undefined) {
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 2;
+        container.scrollLeft = scrollLeft - walk;
+    }
 });
 
 container.addEventListener('touchstart', (e) => {
-  startX = e.touches[0].pageX - container.offsetLeft;
-  scrollLeft = container.scrollLeft;
+    startX = e.touches[0].pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
 });
 
 container.addEventListener('touchmove', (e) => {
-  const x = e.touches[0].pageX - container.offsetLeft;
-  const walk = (x - startX) * 2;
-  container.scrollLeft = scrollLeft - walk;
+    const x = e.touches[0].pageX - container.offsetLeft;
+    const walk = (x - startX) * 2;
+    container.scrollLeft = scrollLeft - walk;
 });
