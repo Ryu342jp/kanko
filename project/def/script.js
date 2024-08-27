@@ -56,6 +56,7 @@ function updatePoints() {
 function collectStamp(id) {
     const stampCounts = JSON.parse(localStorage.getItem('stampCounts') || '{}');
     const collectedStamps = JSON.parse(localStorage.getItem('collectedStamps') || '[]');
+    const lastResetTime = localStorage.getItem('lastResetTime') || '0';
     
     if (!collectedStamps.includes(id)) {
         if (!stampCounts[id]) {
@@ -66,19 +67,14 @@ function collectStamp(id) {
         collectedStamps.push(id);
         localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
         localStorage.setItem('collectedStamps', JSON.stringify(collectedStamps));
+        localStorage.setItem('lastResetTime', Date.now().toString());
         updateStamps();
         updatePoints();
         alert(`スタンプを獲得しました！獲得回数: ${stampCounts[id]}`);
+    } else if (Date.now() - parseInt(lastResetTime) < 24 * 60 * 60 * 1000) {
+        alert('このスタンプは既に獲得済みです。リセット後に再度獲得できます。');
     } else {
-        if (!stampCounts[id]) {
-            stampCounts[id] = 1;
-        } else {
-            stampCounts[id]++;
-        }
-        localStorage.setItem('stampCounts', JSON.stringify(stampCounts));
-        updateStamps();
-        updatePoints();
-        alert(`スタンプの獲得回数が増えました！獲得回数: ${stampCounts[id]}`);
+        alert('このスタンプは既に獲得済みです。リセットしてから再度獲得してください。');
     }
 }
 
@@ -145,11 +141,10 @@ function usePoints() {
 }
 
 function resetStamps() {
-    localStorage.removeItem('collectedStamps');
     localStorage.setItem('points', '0');
-    updateStamps();
+    localStorage.setItem('lastResetTime', Date.now().toString());
     updatePoints();
-    alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。スタンプの獲得回数は保持されています。');
+    alert('ポイントがリセットされ、スタンプが再度獲得可能になりました。スタンプの表示と獲得回数は保持されています。');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
