@@ -7,13 +7,6 @@ let prizes = [
 function preloadAudio() {
     garaGaraSound = new Audio('gara.mp3');
     endSound = new Audio('kara.mp3');
-    
-    // がらがらの音の長さを確認
-    garaGaraSound.addEventListener('loadedmetadata', () => {
-        if (garaGaraSound.duration !== 3) {
-            console.warn('がらがらの音の長さが3秒ではありません。音声ファイルを確認してください。');
-        }
-    });
 }
 
 // ページ読み込み時に音声をプリロード
