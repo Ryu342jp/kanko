@@ -39,17 +39,11 @@ garapon.addEventListener('touchend', handleTouchEnd);
 
 // 色設定の取得と更新
 const colorA = document.getElementById('colorA');
-const colorB = document.getElementById('colorB');
-const colorC = document.getElementById('colorC');
 
 colorA.addEventListener('change', updateColors);
-colorB.addEventListener('change', updateColors);
-colorC.addEventListener('change', updateColors);
 
 function updateColors() {
     prizes[0].color = colorA.value;
-    prizes[1].color = colorB.value;
-    prizes[2].color = colorC.value;
     savePrizes();
     updateRemainingPrizes();
 }
