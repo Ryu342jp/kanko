@@ -61,11 +61,14 @@ function updateColors() {
     updateRemainingPrizes();
 }
 
+let touchStartTime;
+
 function handleTouchStart(e) {
     if (isSpinning) return;
     isDragging = true;
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
+    touchStartTime = Date.now();
 }
 
 function handleTouchMove(e) {
@@ -81,10 +84,15 @@ function handleTouchMove(e) {
     startY = currentY;
 }
 
-function handleTouchEnd() {
+function handleTouchEnd(e) {
     if (!isDragging || isSpinning) return;
     isDragging = false;
-    startSpin();
+    const touchEndTime = Date.now();
+    const touchDuration = touchEndTime - touchStartTime;
+    
+    if (touchDuration < 300) { // 短いタッチの場合はスピンを開始
+        startSpin();
+    }
 }
 
 function startSpin() {
@@ -104,7 +112,6 @@ function startSpin() {
         isSpinning = false;
         currentRotation = totalRotation % 360;
         octagon.style.transition = 'none';
-        
         endSound.play().catch(e => console.error("音声再生エラー:", e));
         dropBall();
     }, 3000);
