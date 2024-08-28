@@ -1,6 +1,6 @@
 const stampData = [
-    { id: '115011', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-05.png', points: 10 },
-    { id: '115012', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-06.png', points: 15 },
+    { id: '115011', image: 'stamp1.png', points: 10 },
+    { id: '115012', image: 'stamp2.png', points: 15 },
     // 他の店舗のデータを追加...
 ];
 
@@ -9,24 +9,49 @@ let sumPoints = 0;
 const usePoints = 5;
 
 function initializeStamps() {
-    stampData.forEach(stamp => {
-        stamps[stamp.id] = {
-            ...stamp,
-            read: 0,
-            accessCount: 0
-        };
-    });
+    // ローカルストレージからデータを読み込む
+    const savedStamps = localStorage.getItem('stamps');
+    const savedPoints = localStorage.getItem('sumPoints');
+
+    if (savedStamps) {
+        stamps = JSON.parse(savedStamps);
+    } else {
+        stampData.forEach(stamp => {
+            stamps[stamp.id] = {
+                ...stamp,
+                read: 0,
+                accessCount: 0
+            };
+        });
+    }
+
+    if (savedPoints) {
+        sumPoints = parseInt(savedPoints);
+    }
+}
+
+function saveData() {
+    localStorage.setItem('stamps', JSON.stringify(stamps));
+    localStorage.setItem('sumPoints', sumPoints.toString());
 }
 
 function renderStamps() {
     const container = document.getElementById('stampContainer');
     container.innerHTML = '';
     
-    Object.values(stamps).filter(stamp => stamp.read > 0).forEach(stamp => {
-        const stampElement = document.createElement('div');
-        stampElement.className = 'stamp';
-        stampElement.style.backgroundImage = `url(${stamp.image})`;
-        container.appendChild(stampElement);
+    Object.values(stamps).forEach(stamp => {
+        if (stamp.read > 0) {
+            const stampElement = document.createElement('div');
+            stampElement.className = 'stamp';
+            stampElement.style.backgroundImage = `url(${stamp.image})`;
+            
+            const readCount = document.createElement('div');
+            readCount.className = 'read-count';
+            readCount.textContent = stamp.read;
+            
+            stampElement.appendChild(readCount);
+            container.appendChild(stampElement);
+        }
     });
 }
 
@@ -74,6 +99,7 @@ function handleStampAcquisition(id) {
             }
             renderStamps();
             updatePointsDisplay();
+            saveData();
             document.getElementById('message').textContent = 'スタンプを獲得しました！';
         } else {
             document.getElementById('message').textContent = '指定された範囲内にいません。';
@@ -85,12 +111,13 @@ function handleStampAcquisition(id) {
 
 function usePointsWithPassword() {
     const password = prompt('パスワードを入力してください：');
-    if (password === '08') { // 実際のパスワードに置き換えてください
+    if (password === 'correctpassword') { // 実際のパスワードに置き換えてください
         const use = Math.floor(sumPoints / usePoints);
         sumPoints = sumPoints % usePoints;
         Object.values(stamps).forEach(stamp => stamp.accessCount = 0);
         renderStamps();
         updatePointsDisplay();
+        saveData();
         document.getElementById('message').textContent = 
             `ポイントが消費され、スタンプが再度獲得可能になりました。${use}回抽選を行えます！`;
     } else {
