@@ -1,6 +1,6 @@
 const stampData = [
-    { id: '1', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-05.png', points: 10 },
-    { id: '2', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-06.png', points: 15 },
+    { id: '1', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-05.png', points: 10, lat: 32.808665436811026 lon: 129.87430175156737 },
+    { id: '2', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-06.png', points: 15, lat: 32.81017230047645, lon: 129.87152314386512 },
     // 他の店舗のデータを追加...
 ];
 
@@ -9,7 +9,6 @@ let sumPoints = 0;
 const usePoints = 5;
 
 function initializeStamps() {
-    // ローカルストレージからデータを読み込む
     const savedStamps = localStorage.getItem('stamps');
     const savedPoints = localStorage.getItem('sumPoints');
 
@@ -59,16 +58,9 @@ function updatePointsDisplay() {
     document.getElementById('totalPoints').textContent = `合計ポイント: ${sumPoints}`;
 }
 
-function checkLocation(latitude, longitude) {
-    const locations = [
-        { lat: 32.74200160651378, lon: 129.87572498701994 },
-        { lat: 32.80864747102957, lon: 129.8744035034573 }
-    ];
-    
-    return locations.some(loc => {
-        const distance = calculateDistance(latitude, longitude, loc.lat, loc.lon);
-        return distance <= 700;
-    });
+function checkLocation(latitude, longitude, stampLat, stampLon) {
+    const distance = calculateDistance(latitude, longitude, stampLat, stampLon);
+    return distance <= 50; // 50メートル以内
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -91,7 +83,7 @@ function handleStampAcquisition(id) {
 
     navigator.geolocation.getCurrentPosition(position => {
         const { latitude, longitude } = position.coords;
-        if (checkLocation(latitude, longitude)) {
+        if (checkLocation(latitude, longitude, stamps[id].lat, stamps[id].lon)) {
             stamps[id].accessCount++;
             if (stamps[id].accessCount === 1) {
                 stamps[id].read++;
@@ -111,15 +103,15 @@ function handleStampAcquisition(id) {
 
 function usePointsWithPassword() {
     const password = prompt('パスワードを入力してください：');
-    if (password === '08') { // 実際のパスワードに置き換えてください
+    if (password === '08') {
         const use = Math.floor(sumPoints / usePoints);
         sumPoints = sumPoints % usePoints;
         Object.values(stamps).forEach(stamp => stamp.accessCount = 0);
-        renderStamps();
-        updatePointsDisplay();
         saveData();
-        document.getElementById('message').textContent = 
-            `ポイントが消費され、スタンプが再度獲得可能になりました。${use}回抽選を行えます！`;
+        
+        // リダイレクト先のURLにパラメータを追加
+        const redirectUrl = `https://ryu342jp.github.io/kanko/project/bet/index.html?reset=true&use=${use}`;
+        window.location.href = redirectUrl;
     } else {
         document.getElementById('message').textContent = 'パスワードが間違っています。';
     }
@@ -154,6 +146,11 @@ updatePointsDisplay();
 // URLからIDを取得してスタンプ獲得処理を行う
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
-if (id) {
+const reset = urlParams.get('reset');
+const use = urlParams.get('use');
+
+if (reset === 'true' && use) {
+    document.getElementById('message').textContent = `ポイントが消費され、スタンプが再度獲得可能になりました。${use}回抽選を行えます！`;
+} else if (id) {
     handleStampAcquisition(id);
 }
