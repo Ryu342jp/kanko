@@ -60,9 +60,9 @@ function updatePointsDisplay() {
 
 function checkLocation(latitude, longitude, stampLat, stampLon) {
     const distance = calculateDistance(latitude, longitude, stampLat, stampLon);
-    return distance <= 50; // 50メートル以内
+    console.log(`Distance to stamp: ${distance} meters`); // デバッグ情報
+    return distance <= 100; // 100メートル以内に変更
 }
-
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3;
     const φ1 = lat1 * Math.PI/180;
@@ -83,6 +83,8 @@ function handleStampAcquisition(id) {
 
     navigator.geolocation.getCurrentPosition(position => {
         const { latitude, longitude } = position.coords;
+        console.log(`User position: ${latitude}, ${longitude}`); // デバッグ情報
+        console.log(`Stamp position: ${stamps[id].lat}, ${stamps[id].lon}`); // デバッグ情報
         if (checkLocation(latitude, longitude, stamps[id].lat, stamps[id].lon)) {
             stamps[id].accessCount++;
             if (stamps[id].accessCount === 1) {
@@ -97,7 +99,12 @@ function handleStampAcquisition(id) {
             document.getElementById('message').textContent = '指定された範囲内にいません。';
         }
     }, error => {
+        console.error('Geolocation error:', error); // エラー情報
         document.getElementById('message').textContent = '位置情報の取得に失敗しました。';
+    }, {
+        enableHighAccuracy: true, // 高精度の位置情報を要求
+        timeout: 5000, // タイムアウトを5秒に設定
+        maximumAge: 0 // キャッシュされた位置情報を使用しない
     });
 }
 
@@ -109,8 +116,12 @@ function usePointsWithPassword() {
         Object.values(stamps).forEach(stamp => stamp.accessCount = 0);
         saveData();
         
+        // 現在のURLからベースURLを取得
+        const currentUrl = new URL(window.location.href);
+        const baseUrl = `${currentUrl.protocol}//${currentUrl.host}${currentUrl.pathname}`;
+        
         // リダイレクト先のURLにパラメータを追加
-        const redirectUrl = `https://ryu342jp.github.io/kanko/project/bet/index.html?reset=true&use=${use}`;
+        const redirectUrl = `${baseUrl}?reset=true&use=${use}`;
         window.location.href = redirectUrl;
     } else {
         document.getElementById('message').textContent = 'パスワードが間違っています。';
