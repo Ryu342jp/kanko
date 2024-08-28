@@ -1,6 +1,6 @@
 const stampData = [
-    { id: '115011', image: 'stamp1.png', points: 10 },
-    { id: '115012', image: 'stamp2.png', points: 15 },
+    { id: '115011', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-05.png', points: 10 },
+    { id: '115012', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-06.png', points: 15 },
     // 他の店舗のデータを追加...
 ];
 
