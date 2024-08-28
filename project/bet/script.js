@@ -85,7 +85,7 @@ function handleQRScan(id) {
 
 function usePointsWithPassword() {
     const password = prompt('パスワードを入力してください：');
-    if (password === 'correctpassword') { // 実際のパスワードに置き換えてください
+    if (password === '08') { // 実際のパスワードに置き換えてください
         const use = Math.floor(sumPoints / usePoints);
         sumPoints = sumPoints % usePoints;
         Object.values(stamps).forEach(stamp => stamp.accessCount = 0);
@@ -126,7 +126,4 @@ initializeStamps();
 renderStamps();
 updatePointsDisplay();
 
-// QRコードスキャンのシミュレーション（実際のQRコードスキャン機能に置き換えてください）
-window.scanQR = function(id) {
-    handleQRScan(id);
-};
+
