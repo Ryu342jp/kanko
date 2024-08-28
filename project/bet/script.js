@@ -1,6 +1,6 @@
 const stampData = [
     { id: '1', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-05.png', points: 10, lat: 32.808665436811026 lon: 129.87430175156737 },
-    { id: '2', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-06.png', points: 15, lat: 32.81017230047645, lon: 129.87152314386512 },
+    { id: '2', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-06.png', points: 15, lat: 32.813957942203594, lon: 129.86818841391369 },
     // 他の店舗のデータを追加...
 ];
 
