@@ -61,7 +61,7 @@ function updatePointsDisplay() {
 function checkLocation(latitude, longitude, stampLat, stampLon) {
     const distance = calculateDistance(latitude, longitude, stampLat, stampLon);
     console.log(`Distance to stamp: ${distance} meters`); // デバッグ情報
-    return distance <= 100; // 100メートル以内に変更
+    return distance <= 50; // 100メートル以内に変更
 }
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3;
