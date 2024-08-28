@@ -31,7 +31,7 @@ function renderStamps() {
 }
 
 function updatePointsDisplay() {
-    document.getElementById('totalPoints').textContent = sumPoints;
+    document.getElementById('totalPoints').textContent = `合計ポイント: ${sumPoints}`;
 }
 
 function checkLocation(latitude, longitude) {
@@ -47,8 +47,7 @@ function checkLocation(latitude, longitude) {
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    // ハーバーサイン公式を使用して距離を計算
-    const R = 6371e3; // 地球の半径（メートル）
+    const R = 6371e3;
     const φ1 = lat1 * Math.PI/180;
     const φ2 = lat2 * Math.PI/180;
     const Δφ = (lat2-lat1) * Math.PI/180;
@@ -59,10 +58,10 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
               Math.sin(Δλ/2) * Math.sin(Δλ/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-    return R * c; // メートル単位の距離
+    return R * c;
 }
 
-function handleQRScan(id) {
+function handleStampAcquisition(id) {
     if (!stamps[id]) return;
 
     navigator.geolocation.getCurrentPosition(position => {
@@ -75,11 +74,12 @@ function handleQRScan(id) {
             }
             renderStamps();
             updatePointsDisplay();
+            document.getElementById('message').textContent = 'スタンプを獲得しました！';
         } else {
-            alert('指定された範囲内にいません。');
+            document.getElementById('message').textContent = '指定された範囲内にいません。';
         }
     }, error => {
-        alert('位置情報の取得に失敗しました。');
+        document.getElementById('message').textContent = '位置情報の取得に失敗しました。';
     });
 }
 
@@ -94,7 +94,7 @@ function usePointsWithPassword() {
         document.getElementById('message').textContent = 
             `ポイントが消費され、スタンプが再度獲得可能になりました。${use}回抽選を行えます！`;
     } else {
-        alert('パスワードが間違っています。');
+        document.getElementById('message').textContent = 'パスワードが間違っています。';
     }
 }
 
@@ -103,16 +103,15 @@ document.getElementById('usePointsButton').addEventListener('click', usePointsWi
 document.getElementById('locationButton').addEventListener('click', () => {
     if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(() => {
-            alert('位置情報の使用が許可されています。');
+            document.getElementById('message').textContent = '位置情報の使用が許可されています。';
         }, () => {
-            alert('位置情報の使用を許可してください。');
+            document.getElementById('message').textContent = '位置情報の使用を許可してください。';
         });
     } else {
-        alert('お使いのブラウザは位置情報をサポートしていません。');
+        document.getElementById('message').textContent = 'お使いのブラウザは位置情報をサポートしていません。';
     }
 });
 
-// Map と交換所ボタンのリンク（実際のURLに置き換えてください）
 document.getElementById('mapButton').addEventListener('click', () => {
     window.location.href = 'https://map.example.com';
 });
@@ -121,9 +120,13 @@ document.getElementById('exchangeButton').addEventListener('click', () => {
     window.location.href = 'https://exchange.example.com';
 });
 
-// 初期化
 initializeStamps();
 renderStamps();
 updatePointsDisplay();
 
-
+// URLからIDを取得してスタンプ獲得処理を行う
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('id');
+if (id) {
+    handleStampAcquisition(id);
+}
