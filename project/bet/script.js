@@ -1,6 +1,6 @@
 const stampData = [
-    { id: '115011', image: 'stamp1.png', points: 10 },
-    { id: '115012', image: 'stamp2.png', points: 15 },
+    { id: '1', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-05.png', points: 10 },
+    { id: '2', image: 'https://ryu342jp.github.io/kanko/project/stamp-01-06.png', points: 15 },
     // 他の店舗のデータを追加...
 ];
 
@@ -111,7 +111,7 @@ function handleStampAcquisition(id) {
 
 function usePointsWithPassword() {
     const password = prompt('パスワードを入力してください：');
-    if (password === 'correctpassword') { // 実際のパスワードに置き換えてください
+    if (password === '08') { // 実際のパスワードに置き換えてください
         const use = Math.floor(sumPoints / usePoints);
         sumPoints = sumPoints % usePoints;
         Object.values(stamps).forEach(stamp => stamp.accessCount = 0);
