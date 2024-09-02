@@ -65,19 +65,21 @@ body {
 }
 
 header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 20px;
-    text-align: center;
+  background-color: #4CAF50;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  position: relative;
 }
 
 h1 {
-    margin: 0;
+  margin: 0;
+  padding-bottom: 10px; /* 下に余白を追加 */
 }
 
 #totalPoints {
-    margin-top: 10px;
-    font-size: 18px;
+  margin-top: 10px;
+  font-size: 18px;
 }
 
 #stampContainer {
