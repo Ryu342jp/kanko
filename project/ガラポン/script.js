@@ -117,40 +117,38 @@ function handleTouchEnd(e) {
     isDragging = false;
     const touchEndTime = Date.now();
     const touchDuration = touchEndTime - touchStartTime;
-    if (touchDuration < 300) { // 300ミリ秒未満のタッチでスピンを開始
+    if (touchDuration < 300) { // 短いタッチの場合はスピンを開始
         startSpin();
     }
 }
 
 function startSpin() {
-    if (isSpinning) return;
+    if (isSpinning) {
+        // 既に回転中の場合は、現在の回転をキャンセルして新しい回転を開始
+        clearTimeout(spinTimeout);
+        octagon.style.transition = 'none';
+        octagon.offsetHeight; // リフロー強制
+    }
+
     isSpinning = true;
     spinButton.disabled = true;
 
     // 音の再生開始
     if (isAudioEnabled) {
-        playSound(garaGaraBuffer).catch(e => console.error("音声再生エラー:", e));
+        playSound(garaGaraBuffer);
     }
 
     const totalRotation = currentRotation + 1080; // 3回転（360度 × 3）
-
-    // トランジションをリセット
-    octagon.style.transition = 'none';
-    octagon.offsetHeight; // リフロー強制
-
-    // トランジションを設定し、回転を開始
-    requestAnimationFrame(() => {
-        octagon.style.transition = `transform 3s ease-out`;
-        octagon.style.transform = `rotate(${totalRotation}deg)`;
-    });
+    octagon.style.transition = `transform 3s ease-out`;
+    octagon.style.transform = `rotate(${totalRotation}deg)`;
 
     // がらがらの音が終わったら玉を落とす
-    setTimeout(() => {
+    spinTimeout = setTimeout(() => {
         isSpinning = false;
         currentRotation = totalRotation % 360;
         octagon.style.transition = 'none';
         if (isAudioEnabled) {
-            playSound(endBuffer).catch(e => console.error("音声再生エラー:", e));
+            playSound(endBuffer);
         }
         dropBall();
     }, 3000);
@@ -176,6 +174,7 @@ function dropBall() {
         }, 2000);
     }, 500);
 }
+
 spinButton.addEventListener('click', startSpin);
 
 function drawPrize() {
