@@ -16,6 +16,7 @@ const ball = document.getElementById('ball');
 const resultDiv = document.getElementById('result');
 const remainingPrizesDiv = document.getElementById('remaining-prizes');
 const enableAudioButton = document.getElementById('enable-audio');
+const spinButton = document.getElementById('spinButton');
 
 let audioContext;
 let garaGaraBuffer;
@@ -25,6 +26,7 @@ let startX, startY;
 let isDragging = false;
 let currentRotation = 0;
 let isAudioEnabled = false;
+let spinTimeout;
 
 function initAudio() {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -97,29 +99,8 @@ function handleTouchStart(e) {
     touchStartTime = Date.now();
 }
 
-const spinButton = document.getElementById('spinButton');
-let isInteractionDisabled = false;
-
-function disableInteraction() {
-    isInteractionDisabled = true;
-    spinButton.disabled = true;
-}
-
-function enableInteraction() {
-    isInteractionDisabled = false;
-    spinButton.disabled = false;
-}
-
-function handleTouchStart(e) {
-    if (isInteractionDisabled) return;
-    isDragging = true;
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    touchStartTime = Date.now();
-}
-
 function handleTouchMove(e) {
-    if (!isDragging || isInteractionDisabled) return;
+    if (!isDragging || isSpinning) return;
     const currentX = e.touches[0].clientX;
     const currentY = e.touches[0].clientY;
     const deltaX = currentX - startX;
@@ -132,7 +113,7 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd(e) {
-    if (!isDragging || isInteractionDisabled) return;
+    if (!isDragging || isSpinning) return;
     isDragging = false;
     const touchEndTime = Date.now();
     const touchDuration = touchEndTime - touchStartTime;
@@ -140,9 +121,6 @@ function handleTouchEnd(e) {
         startSpin();
     }
 }
-
-let isSpinning = false;
-let spinTimeout;
 
 function startSpin() {
     if (isSpinning) {
@@ -153,12 +131,11 @@ function startSpin() {
     }
 
     isSpinning = true;
-    disableInteraction();
+    spinButton.disabled = true;
 
     // 音の再生開始
     if (isAudioEnabled) {
-        garaGaraSound.currentTime = 0;
-        garaGaraSound.play().catch(e => console.error("音声再生エラー:", e));
+        playSound(garaGaraBuffer);
     }
 
     const totalRotation = currentRotation + 1080; // 3回転（360度 × 3）
@@ -171,7 +148,7 @@ function startSpin() {
         currentRotation = totalRotation % 360;
         octagon.style.transition = 'none';
         if (isAudioEnabled) {
-            endSound.play().catch(e => console.error("音声再生エラー:", e));
+            playSound(endBuffer);
         }
         dropBall();
     }, 3000);
@@ -192,13 +169,11 @@ function dropBall() {
             ball.style.top = '0px';
             ball.style.display = 'none';
             // 次の回転のために準備
-            enableInteraction();
+            isSpinning = false;
+            spinButton.disabled = false;
         }, 2000);
     }, 500);
 }
-
-const spinButton = document.getElementById('spinButton');
-spinButton.addEventListener('click', startSpin);
 
 spinButton.addEventListener('click', startSpin);
 
