@@ -137,19 +137,20 @@ function handleStampAcquisition(id) {
     });
   }
 
-  function showHistory() {
-    let historyContent = '';
-    Object.values(stamps).forEach(stamp => {
-      stamp.history.forEach(entry => {
-        historyContent += `${entry.time} - ${entry.name}<br>`;
-      });
+ function showHistory() {
+  let historyContent = '<ul>';
+  Object.values(stamps).forEach(stamp => {
+    stamp.history.forEach(entry => {
+      historyContent += `<li>${entry.time} - ${entry.name}</li>`;
     });
-    
-    const historyModal = document.getElementById('historyModal');
-    const historyBody = document.getElementById('historyBody');
-    historyBody.innerHTML = historyContent || '履歴がありません。';
-    historyModal.style.display = 'block';
-  }  
+  });
+  historyContent += '</ul>';
+  
+  const historyModal = document.getElementById('historyModal');
+  const historyBody = document.getElementById('historyBody');
+  historyBody.innerHTML = historyContent || '<p>履歴がありません。</p>';
+  historyModal.style.display = 'block';
+}
 
 function usePointsWithPassword() {
     const password = prompt('パスワードを入力してください：');
