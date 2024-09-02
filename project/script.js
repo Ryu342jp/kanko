@@ -10,7 +10,7 @@ const stampData = [
 let stamps = {};
 let sumPoints = 0;
 const usePoints = 5;
-const intervalTime = 5 * 60 * 1000; // 5分のインターバル（ミリ秒）
+const intervalTime = 1 * 2 * 1000; // 5分のインターバル（ミリ秒）
 let lastStampTime = 0;
 
 function initializeStamps() {
