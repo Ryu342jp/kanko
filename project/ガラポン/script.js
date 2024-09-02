@@ -123,25 +123,32 @@ function handleTouchEnd(e) {
 }
 
 function startSpin() {
-    if (isSpinning) return;
-    isSpinning = true;
-    
-    // 音の再生開始
-    if (garaGaraSound) {
-        garaGaraSound.currentTime = 0;
-        garaGaraSound.play().catch(e => console.error("音声再生エラー:", e));
+    if (isSpinning) {
+        // 既に回転中の場合は、現在の回転をキャンセルして新しい回転を開始
+        clearTimeout(spinTimeout);
+        octagon.style.transition = 'none';
+        octagon.offsetHeight; // リフロー強制
     }
-    
+
+    isSpinning = true;
+    spinButton.disabled = true;
+
+    // 音の再生開始
+    if (isAudioEnabled) {
+        playSound(garaGaraBuffer);
+    }
+
     const totalRotation = currentRotation + 1080; // 3回転（360度 × 3）
     octagon.style.transition = `transform 3s ease-out`;
     octagon.style.transform = `rotate(${totalRotation}deg)`;
-    
+
     // がらがらの音が終わったら玉を落とす
-    setTimeout(() => {
+    spinTimeout = setTimeout(() => {
+        isSpinning = false;
         currentRotation = totalRotation % 360;
         octagon.style.transition = 'none';
-        if (endSound) {
-            endSound.play().catch(e => console.error("音声再生エラー:", e));
+        if (isAudioEnabled) {
+            playSound(endBuffer);
         }
         dropBall();
     }, 3000);
@@ -194,6 +201,3 @@ function savePrizes() {
 
 // 初期表示時に残り数を更新
 updateRemainingPrizes();
-
-const spinButton = document.getElementById('spinButton');
-spinButton.addEventListener('click', startSpin);
