@@ -1,42 +1,52 @@
 const stampData = [
-    { id: '1', image: 'stamp-01-05.png', points: 10, lat: 32.808665436811026, lon: 129.87430175156737 },
-    { id: '2', image: 'stamp-01-06.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737 },
-    { id: '3', image: 'stamp-01-07.png', points: 10, lat: 32.808665436811026, lon: 129.87430175156737 },
-    { id: '4', image: 'stamp-01-04.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737 },
-    { id: '5', image: 'stamp-01-09.png', points: 10, lat: 32.808665436811026, lon: 129.87430175156737 },
-    { id: '6', image: 'stamp-01-10.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737 },
+    { id: '1', image: 'stamp-01-05.png', points: 10, lat: 32.808665436811026, lon: 129.87430175156737, radius: 50, name: '長崎県立大学' },
+    { id: '2', image: 'stamp-01-06.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店'  },
+    { id: '3', image: 'stamp-01-07.png', points: 10, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店2'  },
+    { id: '4', image: 'stamp-01-04.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店3'  },
+    { id: '5', image: 'stamp-01-09.png', points: 10, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店4'  },
+    { id: '6', image: 'stamp-01-10.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店5'  },
     // 他の店舗のデータを追加...
 ];
 
 let stamps = {};
 let sumPoints = 0;
 const usePoints = 5;
+const intervalTime = 5 * 60 * 1000; // 5分のインターバル（ミリ秒）
+let lastStampTime = 0;
 
 function initializeStamps() {
     const savedStamps = localStorage.getItem('stamps');
     const savedPoints = localStorage.getItem('sumPoints');
-
+    const savedLastStampTime = localStorage.getItem('lastStampTime');
+    
     if (savedStamps) {
-        stamps = JSON.parse(savedStamps);
+      stamps = JSON.parse(savedStamps);
     } else {
-        stampData.forEach(stamp => {
-            stamps[stamp.id] = {
-                ...stamp,
-                read: 0,
-                accessCount: 0
-            };
-        });
+      stampData.forEach(stamp => {
+        stamps[stamp.id] = {
+          ...stamp,
+          read: 0,
+          accessCount: 0,
+          history: []
+        };
+      });
     }
-
+    
     if (savedPoints) {
-        sumPoints = parseInt(savedPoints);
+      sumPoints = parseInt(savedPoints);
     }
-}
+    
+    if (savedLastStampTime) {
+      lastStampTime = parseInt(savedLastStampTime);
+    }
+  }
+  
 
-function saveData() {
+  function saveData() {
     localStorage.setItem('stamps', JSON.stringify(stamps));
     localStorage.setItem('sumPoints', sumPoints.toString());
-}
+    localStorage.setItem('lastStampTime', lastStampTime.toString());
+  }
 
 function renderStamps() {
     const container = document.getElementById('stampContainer');
@@ -62,11 +72,11 @@ function updatePointsDisplay() {
     document.getElementById('totalPoints').textContent = `合計ポイント: ${sumPoints}`;
 }
 
-function checkLocation(latitude, longitude, stampLat, stampLon) {
+function checkLocation(latitude, longitude, stampLat, stampLon, radius) {
     const distance = calculateDistance(latitude, longitude, stampLat, stampLon);
-    console.log(`Distance to stamp: ${distance} meters`); // デバッグ情報
-    return distance <= 50; // 100メートル以内に変更
-}
+    console.log(`Distance to stamp: ${distance} meters`);
+    return distance <= radius;
+  }
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3;
     const φ1 = lat1 * Math.PI/180;
@@ -84,33 +94,62 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 function handleStampAcquisition(id) {
     if (!stamps[id]) return;
-
+    
+    const currentTime = Date.now();
+    if (currentTime - lastStampTime < intervalTime) {
+      const remainingTime = Math.ceil((intervalTime - (currentTime - lastStampTime)) / 1000);
+      document.getElementById('message').textContent = `次のスタンプまで${remainingTime}秒お待ちください。`;
+      return;
+    }
+    
     navigator.geolocation.getCurrentPosition(position => {
-        const { latitude, longitude } = position.coords;
-        console.log(`User position: ${latitude}, ${longitude}`); // デバッグ情報
-        console.log(`Stamp position: ${stamps[id].lat}, ${stamps[id].lon}`); // デバッグ情報
-        if (checkLocation(latitude, longitude, stamps[id].lat, stamps[id].lon)) {
-            stamps[id].accessCount++;
-            if (stamps[id].accessCount === 1) {
-                stamps[id].read++;
-                sumPoints += stamps[id].points;
-            }
-            renderStamps();
-            updatePointsDisplay();
-            saveData();
-            document.getElementById('message').textContent = 'スタンプを獲得しました！';
+      const { latitude, longitude } = position.coords;
+      console.log(`User position: ${latitude}, ${longitude}`);
+      console.log(`Stamp position: ${stamps[id].lat}, ${stamps[id].lon}`);
+      if (checkLocation(latitude, longitude, stamps[id].lat, stamps[id].lon, stamps[id].radius)) {
+        stamps[id].accessCount++;
+        if (stamps[id].accessCount === 1) {
+          stamps[id].read++;
+          sumPoints += stamps[id].points;
+          stamps[id].history.push({
+            time: new Date().toLocaleString(),
+            name: stamps[id].name
+          });
+          lastStampTime = currentTime;
+          
+          renderStamps();
+          updatePointsDisplay();
+          saveData();
+          document.getElementById('message').textContent = 'スタンプを獲得しました！';
         } else {
-            document.getElementById('message').textContent = '指定された範囲内にいません。';
+          document.getElementById('message').textContent = 'このスタンプは既に獲得済みです。';
         }
+      } else {
+        document.getElementById('message').textContent = '指定された範囲内にいません。';
+      }
     }, error => {
-        console.error('Geolocation error:', error); // エラー情報
-        document.getElementById('message').textContent = '位置情報の取得に失敗しました。';
+      console.error('Geolocation error:', error);
+      document.getElementById('message').textContent = '位置情報の取得に失敗しました。';
     }, {
-        enableHighAccuracy: true, // 高精度の位置情報を要求
-        timeout: 5000, // タイムアウトを5秒に設定
-        maximumAge: 0 // キャッシュされた位置情報を使用しない
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
     });
-}
+  }
+
+  function showHistory() {
+    let historyContent = '';
+    Object.values(stamps).forEach(stamp => {
+      stamp.history.forEach(entry => {
+        historyContent += `${entry.time} - ${entry.name}<br>`;
+      });
+    });
+    
+    const historyModal = document.getElementById('historyModal');
+    const historyBody = document.getElementById('historyBody');
+    historyBody.innerHTML = historyContent || '履歴がありません。';
+    historyModal.style.display = 'block';
+  }  
 
 function usePointsWithPassword() {
     const password = prompt('パスワードを入力してください：');
