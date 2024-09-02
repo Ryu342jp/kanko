@@ -128,13 +128,17 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd(e) {
-    if (!isDragging || isSpinning) return;
-    isDragging = false;
-    const touchEndTime = Date.now();
-    const touchDuration = touchEndTime - touchStartTime;
-    if (touchDuration < 300) { // 短いタッチの場合はスピンを開始
-        startSpin();
-    }
+  if (!isDragging || isSpinning) return;
+  isDragging = false;
+  const touchEndTime = Date.now();
+  const touchDuration = touchEndTime - touchStartTime;
+  if (touchDuration < 300) { // 短いタッチの場合はスピンを開始
+    startSpin();
+  } else {
+    // タッチ操作が終了したら、回転状態をリセット
+    isSpinning = false;
+    spinButton.disabled = false;
+  }
 }
 
 function startSpin() {
