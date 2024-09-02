@@ -11,6 +11,7 @@
         <header>
             <h1>QRコードスタンプラリー</h1>
             <p id="totalPoints">合計ポイント: 0</p>
+            <button id="historyButton" class="history-button">履歴</button>
         </header>
         <div id="stampContainer"></div>
         <div id="controls">
@@ -20,6 +21,13 @@
             <button id="usePointsButton">ポイントを使う</button>
         </div>
         <div id="message"></div>
+        <div id="historyModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>スタンプ獲得履歴</h2>
+        <div id="historyBody"></div>
+      </div>
+    </div>
     </div>
     <script src="script.js"></script>
 </body>
