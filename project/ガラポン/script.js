@@ -97,8 +97,29 @@ function handleTouchStart(e) {
     touchStartTime = Date.now();
 }
 
+const spinButton = document.getElementById('spinButton');
+let isInteractionDisabled = false;
+
+function disableInteraction() {
+    isInteractionDisabled = true;
+    spinButton.disabled = true;
+}
+
+function enableInteraction() {
+    isInteractionDisabled = false;
+    spinButton.disabled = false;
+}
+
+function handleTouchStart(e) {
+    if (isInteractionDisabled) return;
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+}
+
 function handleTouchMove(e) {
-    if (!isDragging || isSpinning) return;
+    if (!isDragging || isInteractionDisabled) return;
     const currentX = e.touches[0].clientX;
     const currentY = e.touches[0].clientY;
     const deltaX = currentX - startX;
@@ -111,7 +132,7 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd(e) {
-    if (!isDragging || isSpinning) return;
+    if (!isDragging || isInteractionDisabled) return;
     isDragging = false;
     const touchEndTime = Date.now();
     const touchDuration = touchEndTime - touchStartTime;
@@ -121,7 +142,8 @@ function handleTouchEnd(e) {
 }
 
 function startSpin() {
-    if (isSpinning) return;
+    if (isInteractionDisabled) return;
+    disableInteraction();
     isSpinning = true;
     
     playSound(garaGaraBuffer);
@@ -155,9 +177,12 @@ function dropBall() {
             ball.style.display = 'none';
             // 次の回転のために準備
             isSpinning = false;
+            enableInteraction();
         }, 2000);
     }, 500);
 }
+
+spinButton.addEventListener('click', startSpin);
 
 function drawPrize() {
     const totalCount = prizes.reduce((sum, prize) => sum + prize.count, 0);
