@@ -128,11 +128,11 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd(e) {
-  if (!isDragging || isSpinning) return;
+  if (!isDragging) return;
   isDragging = false;
   const touchEndTime = Date.now();
   const touchDuration = touchEndTime - touchStartTime;
-  if (touchDuration < 300) { // 短いタッチの場合はスピンを開始
+  if (touchDuration < 300 && !isSpinning) { // 短いタッチかつ回転中でない場合はスピンを開始
     startSpin();
   } else {
     // タッチ操作が終了したら、回転状態をリセット
@@ -142,12 +142,7 @@ function handleTouchEnd(e) {
 }
 
 function startSpin() {
-  if (isSpinning) {
-    // 既に回転中の場合は、現在の回転をキャンセルして新しい回転を開始
-    clearTimeout(spinTimeout);
-    octagon.style.transition = 'none';
-    octagon.offsetHeight; // リフロー強制
-  }
+  if (isSpinning) return;
 
   isSpinning = true;
   spinButton.disabled = true;
@@ -157,7 +152,14 @@ function startSpin() {
     playSound(garaGaraBuffer);
   }
 
-  const totalRotation = currentRotation + 1080; // 3回転（360度 × 3）
+  // 現在の回転角度をリセット
+  currentRotation = 0;
+  octagon.style.transition = 'none';
+  octagon.style.transform = 'rotate(0deg)';
+  octagon.offsetHeight; // リフロー強制
+
+  // 新しい回転を開始
+  const totalRotation = 1080; // 3回転（360度 × 3）
   octagon.style.transition = `transform 3s ease-out`;
   octagon.style.transform = `rotate(${totalRotation}deg)`;
 
@@ -191,7 +193,7 @@ function dropBall() {
             isSpinning = false;
             spinButton.disabled = false;
         }, 2000);
-    }, 500);
+    }, 1000); // 500msから1000msに変更
 }
 
 spinButton.addEventListener('click', startSpin);
