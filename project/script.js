@@ -1,5 +1,5 @@
 const stampData = [
-    { id: '1', image: 'stamp-01-05.png', points: 10, lat: 32.808665436811026, lon: 129.87430175156737, radius: 100, name: '長崎県立大学' },
+    { id: '1', image: 'stamp-01-05.png', points: 10, lat: 32.8138752, lon:  129.8694144, radius: 100, name: '長崎県立大学' },
     { id: '2', image: 'stamp-01-06.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店'  },
     { id: '3', image: 'stamp-01-07.png', points: 10, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店2'  },
     { id: '4', image: 'stamp-01-04.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店3'  },
