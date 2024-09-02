@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>チケット抽選アプリ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        #lotteryMachine {
+            width: 200px;
+            height: 200px;
+            background-color: #ffeb3b;
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+            margin: 20px auto;
+            transition: transform 3s;
+            position: relative;
+        }
+        #plate {
+            width: 100px;
+            height: 20px;
+            background-color: #8b4513;
+            margin: 0 auto;
+            position: relative;
+            top: 20px;
+        }
+        #drawButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 50px;
+        }
+        #results {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .ball {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: top 1s ease-in, left 1s ease-in;
+            z-index: 10;
+        }
+        
+        #plate {
+            width: 100px;
+            height: 20px;
+            background-color: #8b4513;
+            margin: 0 auto;
+            position: relative;
+            top: 20px;
+            overflow: visible;
+        }
+        #soundButton {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>チケット抽選アプリ</h1>
+        <button id="soundButton">音声を有効にする</button>
+        <div id="lotteryMachine"></div>
+        <div id="plate"></div>
+        <button id="drawButton">回す</button>
+        <div id="result"></div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let prizes = JSON.parse(localStorage.getItem('prizes')) || {
+            'チケット': { count: 1, color: 'red' },
+            '商品券A': { count: 250, color: 'green' },
+            '商品券B': { count: 500, color: 'blue' }
+        };
+
+        const lotteryMachine = document.getElementById('lotteryMachine');
+        const drawButton = document.getElementById('drawButton');
+        const resultDiv = document.getElementById('result');
+        const resultsDiv = document.getElementById('results');
+        const soundButton = document.getElementById('soundButton');
+
+        let soundEnabled = false;
+        const drawSound = new Audio('gara.mp3');
+        const resultSound = new Audio('kara.mp3');
+
+        drawSound.load();
+        resultSound.load();
+
+        let currentBall = null;
+
+        function updateResults() {
+            resultsDiv.innerHTML = '残り数: ' + Object.entries(prizes).map(([name, { count, color }]) =>
+                `${name}: ${count} <span class="color-box" style="background-color: ${color};"></span>`
+            ).join(', ');
+        }
+
+        function drawPrize() {
+            if (soundEnabled) drawSound.play();
+            
+            lotteryMachine.style.transform = 'rotate(1080deg)';
+            drawButton.disabled = true;
+
+            setTimeout(() => {
+                const totalPrizes = Object.values(prizes).reduce((sum, { count }) => sum + count, 0);
+                const randomNum = Math.random() * totalPrizes;
+                let cumulativeSum = 0;
+                let result;
+
+                for (const [name, { count }] of Object.entries(prizes)) {
+                    cumulativeSum += count;
+                    if (randomNum < cumulativeSum) {
+                        result = name;
+                        break;
+                    }
+                }
+
+                prizes[result].count--;
+                localStorage.setItem('prizes', JSON.stringify(prizes));
+
+                if (currentBall) {
+                    currentBall.remove();
+                }
+
+                const ball = document.createElement('div');
+                ball.classList.add('ball');
+                ball.style.backgroundColor = prizes[result].color;
+                lotteryMachine.appendChild(ball);
+                currentBall = ball;
+
+                setTimeout(() => {
+                    // 玉を皿の位置まで移動
+                    const plateRect = document.getElementById('plate').getBoundingClientRect();
+                    const machineRect = lotteryMachine.getBoundingClientRect();
+                    
+                    ball.style.top = `${plateRect.top - machineRect.top + 10}px`;
+                    ball.style.left = '50%';
+                    
+                    if (soundEnabled) resultSound.play();
+                }, 100);
+
+                setTimeout(() => {
+                    resultDiv.textContent = `結果: ${result}`;
+                    updateResults();
+                    lotteryMachine.style.transform = 'rotate(0deg)';
+                    drawButton.disabled = false;
+                    
+                    // 玉を皿の子要素として追加し、位置を調整
+                    document.getElementById('plate').appendChild(ball);
+                    ball.style.top = '-15px';
+                    ball.style.left = '35px';
+                }, 1100);
+            }, 3000);
+        }
+        
+        drawButton.addEventListener('click', drawPrize);
+        lotteryMachine.addEventListener('click', drawPrize);
+
+        let startX, startY;
+
+        lotteryMachine.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        lotteryMachine.addEventListener('touchmove', function(e) {
+            if (!startX || !startY) return;
+
+            let endX = e.touches[0].clientX;
+            let endY = e.touches[0].clientY;
+
+            let diffX = startX - endX;
+            let diffY = startY - endY;
+
+            if (Math.abs(diffX) > 50 || Math.abs(diffY) > 50) {
+                drawPrize();
+                startX = null;
+                startY = null;
+            }
+        });
+
+        soundButton.addEventListener('click', () => {
+            soundEnabled = true;
+            soundButton.style.display = 'none';
+        });
+
+        updateResults();
+    </script>
+</body>
+</html>
