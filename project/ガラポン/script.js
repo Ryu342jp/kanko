@@ -29,8 +29,23 @@ let isAudioEnabled = false;
 let spinTimeout;
 
 function initAudio() {
+  if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    preloadAudio();
+  }
 }
+
+// enableAudioButtonのイベントリスナーを変更
+enableAudioButton.addEventListener('click', () => {
+  initAudio();
+  if (audioContext && audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+  isAudioEnabled = true;
+  enableAudioButton.style.display = 'none';
+});
+
+// window.addEventListener('load', ...)の部分を削除
 
 function loadAudio(url) {
     return fetch(url)
