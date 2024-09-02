@@ -173,6 +173,21 @@ function usePointsWithPassword() {
 
 document.getElementById('usePointsButton').addEventListener('click', usePointsWithPassword);
 
+document.getElementById('historyButton').addEventListener('click', showHistory);
+
+const historyModal = document.getElementById('historyModal');
+const closeBtn = document.getElementsByClassName('close')[0];
+
+closeBtn.onclick = function() {
+  historyModal.style.display = 'none';
+}
+
+window.onclick = function(event) {
+  if (event.target == historyModal) {
+    historyModal.style.display = 'none';
+  }
+}
+
 document.getElementById('locationButton').addEventListener('click', () => {
     if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(() => {
