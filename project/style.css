@@ -6,15 +6,16 @@ body {
 }
 
 .history-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    opacity: 0.7;
+  position: absolute;
+  top: auto; /* topプロパティを削除 */
+  bottom: 10px; /* 下部に配置 */
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.7;
 }
 
 .history-button:hover {
@@ -74,7 +75,8 @@ header {
 
 h1 {
   margin: 0;
-  padding-bottom: 10px; /* 下に余白を追加 */
+  padding-bottom: 30px; /* 下の余白を増やす */
+  font-size: 1.5em; /* フォントサイズを小さくする */
 }
 
 #totalPoints {
@@ -83,23 +85,26 @@ h1 {
 }
 
 #stampContainer {
-    display: flex;
-    overflow-x: auto;
-    padding: 20px;
-    background-color: #e0e0e0;
+  display: flex;
+  overflow-x: auto;
+  padding: 20px;
+  background-color: #e0e0e0;
+  -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロール */
 }
 
+
 .stamp {
-    width: 80px;
-    height: 80px;
-    margin-right: 10px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 50%;
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    position: relative;
-    flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  margin-right: 10px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  position: relative;
+  flex-shrink: 0;
 }
+
 
 .read-count {
     position: absolute;
@@ -142,16 +147,16 @@ button {
   }
 
   #stampContainer {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row; /* 横スクロールを維持 */
+    justify-content: flex-start; /* 左寄せ */
   }
 
   .stamp {
-    width: 75vw;
-    height: 75vw;
-    margin: 10px 0;
+    width: 50vw; /* 画面幅の5割に変更 */
+    height: 50vw;
+    margin: 10px;
   }
-
+    
   #controls {
     flex-direction: column;
   }
