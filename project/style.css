@@ -166,12 +166,24 @@ h1 {
     }
 
     .stamp {
-        width: 160px;
-        height: 160px;
+        width: 80px;
+        height: 80px;
         margin: 10px;
     }
 
+    #controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    #controls .button-row {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
     #controls button {
+        flex-basis: calc(50% - 5px);
         font-size: 12px;
         padding: 8px;
     }
