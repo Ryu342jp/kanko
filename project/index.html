@@ -16,24 +16,25 @@
             </div>
         </header>
         <div id="stampContainer"></div>
-        <div id="controls">
-            <button id="mapButton">Map</button>
-            <button id="locationButton">位置を確認</button>
-            <button id="usePointsButton">ポイントを使う</button>
-            <button id="exchangeButton">交換所に行く</button>
-        </div>
         <div id="message"></div>
-        <div id="historyModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>スタンプ獲得履歴</h2>
-                <div id="historyBody"></div>
+        <div id="controls">
+            <div class="button-row">
+                <button id="mapButton">Map</button>
+                <button id="locationButton">位置を確認</button>
+            </div>
+            <div class="button-row">
+                <button id="usePointsButton">ポイントを使う</button>
+                <button id="exchangeButton">交換所に行く</button>
             </div>
         </div>
     </div>
-    <footer style="padding: 20px; text-align: center; background-color: #f0f0f0;">
-  <p>キャッシュや閲覧履歴の削除を行うとポイントがリセットされてしまうので行わないようにお願いします。</p>
-</footer>
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>スタンプ獲得履歴</h2>
+            <div id="historyContent"></div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
