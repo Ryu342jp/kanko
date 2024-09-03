@@ -43,6 +43,7 @@ h1 {
     display: inline-block; /* インラインブロック要素に変更 */
     width: auto; /* 幅を自動調整 */
     min-width: 0; /* 最小幅を0に設定 */
+}
 
 #totalPoints {
     font-size: 16px;
