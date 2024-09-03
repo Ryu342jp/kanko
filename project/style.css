@@ -167,8 +167,13 @@ h1 {
 
     .header-button {
         margin-bottom: 10px;
+        margin-left: 44%;
         padding: 3px 6px; /* スマホ表示時のパディングを縮小 */
         font-size: 12px; /* スマホ表示時のフォントサイズを縮小 */
+        display: inline-block; /* インラインブロック要素に変更 */
+        width: 50px; /* 幅を自動調整 */
+        min-width: 0; /* 最小幅を0に設定 */
+
     }
 
     #totalPoints {
