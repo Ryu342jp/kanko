@@ -1,68 +1,15 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
-}
-
-.history-button {
-  position: absolute;
-  top: auto; /* topプロパティを削除 */
-  bottom: 10px; /* 下部に配置 */
-  right: 10px;
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  opacity: 0.7;
-}
-
-.history-button:hover {
-    opacity: 1;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
 }
 
 #app {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 header {
@@ -70,6 +17,12 @@ header {
   color: white;
   padding: 20px;
   text-align: center;
+}
+
+h1 {
+  margin: 0;
+  padding-bottom: 10px;
+  font-size: 1.5em;
 }
 
 #headerInfo {
@@ -89,12 +42,6 @@ header {
   border-radius: 5px;
 }
 
-h1 {
-  margin: 0;
-  padding-bottom: 10px;
-  font-size: 1.5em;
-}
-
 #totalPoints {
   font-size: 16px;
 }
@@ -104,9 +51,8 @@ h1 {
   overflow-x: auto;
   padding: 20px;
   background-color: #e0e0e0;
-  -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロール */
+  -webkit-overflow-scrolling: touch;
 }
-
 
 .stamp {
   width: 80px;
@@ -120,40 +66,78 @@ h1 {
   flex-shrink: 0;
 }
 
-
 .read-count {
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #4CAF50;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-size: 12px;
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4CAF50;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 12px;
 }
 
 #controls {
-    display: flex;
-    justify-content: space-around;
-    padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 20px;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
+#controls button {
+  flex-basis: calc(50% - 10px);
+  margin: 5px;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
 }
 
 #message {
-    text-align: center;
-    padding: 20px;
-    font-weight: bold;
-    color: #4CAF50;
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 600px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 600px) {
@@ -163,6 +147,7 @@ button {
 
   h1 {
     font-size: 1.2em;
+    margin-bottom: 10px;
   }
 
   #headerInfo {
@@ -176,5 +161,27 @@ button {
 
   #totalPoints {
     text-align: center;
+  }
+
+  #stampContainer {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .stamp {
+    width: 50vw;
+    height: 50vw;
+    margin: 10px;
+  }
+
+  #controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  #controls button {
+    flex-basis: calc(50% - 10px);
+    font-size: 12px;
+    padding: 8px;
   }
 }
