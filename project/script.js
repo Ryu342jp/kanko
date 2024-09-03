@@ -132,17 +132,28 @@ function handleStampAcquisition(id) {
 }
 
 function showHistory() {
-    let historyContent = '<ul>';
+    const historyModal = document.getElementById('historyModal');
+    const historyContent = document.getElementById('historyContent');
+    
+    if (!historyContent) {
+        console.error('historyContent element not found');
+        return;
+    }
+
+    let historyHTML = '<ul>';
     Object.values(stamps).forEach(stamp => {
         stamp.history.forEach(entry => {
-            historyContent += `<li>${entry.time} - ${entry.name}</li>`;
+            historyHTML += `<li>${entry.time}: ${entry.name}</li>`;
         });
     });
-    historyContent += '</ul>';
+    historyHTML += '</ul>';
     
-    const historyModal = document.getElementById('historyModal');
-    const historyBody = document.getElementById('historyBody');
-    historyBody.innerHTML = historyContent || '<p>履歴がありません。</p>';
+    if (historyHTML === '<ul></ul>') {
+        historyContent.innerHTML = '<p>履歴がありません。</p>';
+    } else {
+        historyContent.innerHTML = historyHTML;
+    }
+    
     historyModal.style.display = 'block';
 }
 
