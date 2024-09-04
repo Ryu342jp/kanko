@@ -6,6 +6,10 @@ const locations = [
 let map, userMarker;
 const defaultCenter = [32.74392196939944, 129.87867759617737];
 const defaultZoom = 16;
+const iconTypes = {
+    'shopping': './image/shopping.png',
+    'foods': './image/foods.png'
+};
 
 function initMap() {
     map = L.map('map').setView(defaultCenter, defaultZoom);
