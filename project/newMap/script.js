@@ -1,15 +1,11 @@
 const locations = [
-    { lat: 32.743602850872975, lng: 129.87845706348565, name: '浜屋百貨店', limited: true, electronic: true, foods: false, priority: 1, url: 'shop/hamahyakka.html', imageUrl: 'image/hamahyakka.jpg' },
+    { lat: 32.743602850872975, lng: 129.87845706348565, name: '浜屋百貨店', limited: true, electronic: true, foods: false, priority: 1, url: 'shop/hamahyakka.html', imageUrl: 'image/hamahyakka.png' },
     // ほかの店舗も同様に追加
 ];
 
 let map, userMarker;
 const defaultCenter = [32.74392196939944, 129.87867759617737];
 const defaultZoom = 16;
-const iconTypes = {
-    'shopping': './image/shopping.png',
-    'foods': './image/foods.png'
-};
 
 function initMap() {
     map = L.map('map').setView(defaultCenter, defaultZoom);
@@ -44,12 +40,12 @@ function addMarker(location) {
 function getIcon(location) {
     if (location.foods) {
         return L.icon({
-            iconUrl: 'fork-and-spoon.png',
+            iconUrl: 'image/foods.png',
             iconSize: [32, 32]
         });
     } else {
         return L.icon({
-            iconUrl: 'shopping-bag.png',
+            iconUrl: 'image/shopping.png',
             iconSize: [32, 32]
         });
     }
