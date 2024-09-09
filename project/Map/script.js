@@ -1,5 +1,5 @@
 const locations = [
-    { lat: 32.743602850872975, lng: 129.87845706348565, name: '長崎県立大ラーメン', limited: true, electronic: true, foods: false, priority: 1, url: 'shop/nagasakikendai.html', imageUrl: 'image/nagasakikendai.png' },
+    { lat: 32.743602850872975, lng: 129.87845706348565, name: '長崎県立大ラーメン', limited: true, electronic: true, foods: false, priority: 1, url: 'shop/nagasakikendai.html', imageUrl: 'image/nagasakikendai.jpg' },
     // ほかの店舗も同様に追加
 ];
 
