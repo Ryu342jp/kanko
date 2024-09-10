@@ -128,7 +128,7 @@
         function updateResults() {
             resultsDiv.innerHTML = '残り数: ' + Object.entries(prizes).map(([name, { count, color }]) =>
                 `${name}: ${count} <span class="color-box" style="background-color: ${color};"></span>`
-            ).join(', ');
+            ).join(',  ');
         }
 
         function drawPrize() {
