@@ -1,11 +1,12 @@
 
-const backgroundImages = [];
-const imgElements = document.querySelectorAll('.section img');
 
-imgElements.forEach(img => {
-    backgroundImages.push(img.src);
+// ナビゲーションの設定
+document.addEventListener("DOMContentLoaded", function () {
+    const menuToggle = document.querySelector(".menu-toggle");
+    const navbarMenu = document.querySelector(".navbar-menu");
+
+    menuToggle.addEventListener("click", function () {
+        navbarMenu.classList.toggle("active");
+        menuToggle.classList.toggle("active");
+    });
 });
-
-let currentIndex = 0;
-
-
