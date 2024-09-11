@@ -68,3 +68,45 @@ html {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/*イベント以外ではここから*/
+#check-point-button {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 90%;
+    /* ボタンの幅を画面の90%に設定 */
+    max-width: 300px;
+    /* 最大幅を設定 */
+}
+
+#check-point-button a {
+    display: block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+    /* テキストの折り返しを防ぐ */
+    overflow: hidden;
+    /* はみ出た部分を隠す */
+    text-overflow: ellipsis;
+    /* はみ出た部分を...で表示 */
+}
+
+#check-point-button a:hover {
+    background-color: #0056b3;
+}
+
+#map {
+    height: calc(100% - 60px);
+    width: 100%;
+    padding-bottom: 60px;
+}
+
+/*ここまでを削除*/
