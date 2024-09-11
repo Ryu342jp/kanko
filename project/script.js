@@ -204,11 +204,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     document.getElementById('mapButton').addEventListener('click', () => {
-        window.location.href = 'https://map.example.com';
+        window.location.href = '/Map/index.html';
     });
     
     document.getElementById('exchangeButton').addEventListener('click', () => {
-        window.location.href = '/Map/index.html';
+        window.location.href = 'https://maps.app.goo.gl/koUq5F7UyFakbaNw5';
     });
     
     initializeStamps();
