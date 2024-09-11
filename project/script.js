@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     document.getElementById('exchangeButton').addEventListener('click', () => {
-        window.location.href = 'https://exchange.example.com';
+        window.location.href = '/Map/index.html';
     });
     
     initializeStamps();
