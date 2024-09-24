@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>店舗マップ</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="search-panel">
+        <button id="search-toggle">🔍</button>
+    </div>
+    <div id="icons-container"></div>
+    <div id="bottom-panel">
+        <img id="shop-image" src="" alt="店舗画像">
+        <div id="shop-info">
+            <h3 id="shop-name"></h3>
+            <a id="shop-detail" href="#" class="detail-button">詳しく見る</a>
+        </div>
+        <button onclick="prevLocation()">◀</button>
+        <button onclick="nextLocation()">▶</button>
+    </div>
+    <div id="point-container">
+        <button onclick="location.href = '../project/index.html'">
+            <img id="point-icon" src="image/point.png">
+        </button>
+    </div>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>検索オプション</h2>
+            <label><input type="checkbox" id="electronic"> 電子決済対応</label>
+            <label><input type="checkbox" id="foods"> 飲食店</label>
+            <label><input type="checkbox" id="limited"> 限定メニュー対応</label>
+            <button id="search-button">検索</button>
+            <button id="close-popup">閉じる</button>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
