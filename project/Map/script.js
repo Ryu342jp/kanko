@@ -134,7 +134,7 @@ function getIconsHTML(area) {
         case 'A':
             return `
                 <a href="https://www.hamanmachi.com" target="_blank"><img src="image/hama.png" alt="公式ホームページ"></a>
-                <a href="https://www.google.com/search?q=instagram+hama_bura" target="_blank"><img src="image/insta.png" alt="インスタグラム"></a>
+                <a href="https://www.google.com/search?q=instagram+hama_bura" target="_blank" rel="noreferrer"><img src="image/insta.png" alt="インスタグラム"></a>
             `;
         case 'B':
             return `
