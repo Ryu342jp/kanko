@@ -139,7 +139,7 @@ function getIconsHTML(area) {
         case 'B':
             return `
                 <a href="https://www.nagasaki-douza.com/" target="_blank"><img src="image/doza.png" alt="公式ホームページ"></a>
-                <a href="https://www.google.com/search?q=インスタグラム+douzagram" target="_blank" rel="noreferrer"><img src="image/insta.png" alt="インスタグラム"></a>
+                <a href="https://www.google.com/search?q=%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF+douzagram" target="_blank"><img src="image/insta.png" alt="インスタグラム"></a>
             `;
         case 'C':
             return `
