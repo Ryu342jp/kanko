@@ -1,15 +1,15 @@
 const stampData = [
-  { id: '11', image: 'stamp-01-05.png', points: 10, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '長崎県立大学' },
-  { id: '2', image: 'stamp-01-06.png', points: 15, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店' },
-  { id: '3', image: 'stamp-01-07.png', points: 10, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店2' },
-  { id: '4', image: 'stamp-01-04.png', points: 15, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店3' },
-  { id: '5', image: 'stamp-01-09.png', points: 10, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店4' },
-  { id: '6', image: 'stamp-01-10.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店5' },
+  { id: '11', image: 'stamp-01-05.png', points: 1, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '長崎県立大学' },
+  { id: '2', image: 'stamp-01-06.png', points: 1, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店' },
+  { id: '3', image: 'stamp-01-07.png', points: 1, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店2' },
+  { id: '4', image: 'stamp-01-04.png', points: 1, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店3' },
+  { id: '5', image: 'stamp-01-09.png', points: 1, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店4' },
+  { id: '6', image: 'stamp-01-10.png', points: 1, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店5' },
 ];
 
 let stamps = {};
 let sumPoints = 0;
-const usePoints = 20;
+const usePoints = 5;
 const intervalTime = 1 * 2 * 1000; // 2秒のインターバル（ミリ秒）
 let lastStampTime = 0;
 
