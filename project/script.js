@@ -1,15 +1,15 @@
 const stampData = [
-    { id: '1', image: 'stamp-01-05.png', points: 10, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '長崎県立大学' },
-    { id: '2', image: 'stamp-01-06.png', points: 15, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店' },
-    { id: '3', image: 'stamp-01-07.png', points: 10, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店2' },
-    { id: '4', image: 'stamp-01-04.png', points: 15, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店3' },
-    { id: '5', image: 'stamp-01-09.png', points: 10, lat: 32.8138752, lon: 129.8694144, radius: 1000000, name: '浜町店4' },
+    { id: '1', image: 'stamp-01-05.png', points: 10, lat: 32.8138752, lon: 129.8694144, radius: 10000, name: '長崎県立大学' },
+    { id: '2', image: 'stamp-01-06.png', points: 15, lat: 32.8138752, lon: 129.8694144, radius: 10000, name: '浜町店' },
+    { id: '3', image: 'stamp-01-07.png', points: 10, lat: 32.8138752, lon: 129.8694144, radius: 10000, name: '浜町店2' },
+    { id: '4', image: 'stamp-01-04.png', points: 15, lat: 32.8138752, lon: 129.8694144, radius: 10000, name: '浜町店3' },
+    { id: '5', image: 'stamp-01-09.png', points: 10, lat: 32.8138752, lon: 129.8694144, radius: 10000, name: '浜町店4' },
     { id: '6', image: 'stamp-01-10.png', points: 15, lat: 32.808665436811026, lon: 129.87430175156737, radius: 30, name: '浜町店5' },
 ];
 
 let stamps = {};
 let sumPoints = 0;
-const usePoints = 20;
+const usePoints = 50;
 const intervalTime = 1 * 2 * 1000; // 5分のインターバル（ミリ秒）
 let lastStampTime = 0;
 
@@ -17,7 +17,7 @@ function initializeStamps() {
     const savedStamps = localStorage.getItem('stamps');
     const savedPoints = localStorage.getItem('sumPoints');
     const savedLastStampTime = localStorage.getItem('lastStampTime');
-    
+
     if (savedStamps) {
         stamps = JSON.parse(savedStamps);
     } else {
@@ -30,11 +30,11 @@ function initializeStamps() {
             };
         });
     }
-    
+
     if (savedPoints) {
         sumPoints = parseInt(savedPoints);
     }
-    
+
     if (savedLastStampTime) {
         lastStampTime = parseInt(savedLastStampTime);
     }
@@ -75,27 +75,27 @@ function checkLocation(latitude, longitude, stampLat, stampLon, radius) {
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3;
-    const φ1 = lat1 * Math.PI/180;
-    const φ2 = lat2 * Math.PI/180;
-    const Δφ = (lat2-lat1) * Math.PI/180;
-    const Δλ = (lon2-lon1) * Math.PI/180;
-    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-              Math.cos(φ1) * Math.cos(φ2) *
-              Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 }
 
 function handleStampAcquisition(id) {
     if (!stamps[id]) return;
-    
+
     const currentTime = Date.now();
     if (currentTime - lastStampTime < intervalTime) {
         const remainingTime = Math.ceil((intervalTime - (currentTime - lastStampTime)) / 1000);
         document.getElementById('message').textContent = `次のスタンプまで${remainingTime}秒お待ちください。`;
         return;
     }
-    
+
     navigator.geolocation.getCurrentPosition(position => {
         const { latitude, longitude } = position.coords;
         console.log(`User position: ${latitude}, ${longitude}`);
@@ -110,7 +110,7 @@ function handleStampAcquisition(id) {
                     name: stamps[id].name
                 });
                 lastStampTime = currentTime;
-                
+
                 renderStamps();
                 updatePointsDisplay();
                 saveData();
@@ -134,7 +134,7 @@ function handleStampAcquisition(id) {
 function showHistory() {
     const historyModal = document.getElementById('historyModal');
     const historyContent = document.getElementById('historyContent');
-    
+
     if (!historyContent) {
         console.error('historyContent element not found');
         return;
@@ -147,50 +147,56 @@ function showHistory() {
         });
     });
     historyHTML += '</ul>';
-    
+
     if (historyHTML === '<ul></ul>') {
         historyContent.innerHTML = '<p>履歴がありません。</p>';
     } else {
         historyContent.innerHTML = historyHTML;
     }
-    
+
     historyModal.style.display = 'block';
 }
 
 function usePointsWithPassword() {
-    const password = prompt('パスワードを入力してください：');
-    if (password === '08') {
-        const use = Math.floor(sumPoints / usePoints);
-        sumPoints = sumPoints % usePoints;
-        Object.values(stamps).forEach(stamp => stamp.accessCount = 0);
-        saveData();
-        
-        const currentUrl = new URL(window.location.href);
-        const baseUrl = `${currentUrl.protocol}//${currentUrl.host}${currentUrl.pathname}`;
-        const redirectUrl = `${baseUrl}?reset=true&use=${use}`;
-        window.location.href = redirectUrl;
-    } else {
-        document.getElementById('message').textContent = 'パスワードが間違っています。';
-    }
+    const use = Math.floor(sumPoints / usePoints);
+    sumPoints = sumPoints % usePoints;
+    Object.values(stamps).forEach(stamp => stamp.accessCount = 0);
+    saveData();
+    const currentUrl = new URL(window.location.href);
+    const baseUrl = `${currentUrl.protocol}//${currentUrl.host}${currentUrl.pathname}`;
+    const redirectUrl = `${baseUrl}?reset=true&use=${use}`;
+    window.location.href = redirectUrl;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('usePointsButton').addEventListener('click', usePointsWithPassword);
     document.getElementById('historyButton').addEventListener('click', showHistory);
-    
+
     const historyModal = document.getElementById('historyModal');
     const closeBtn = document.getElementsByClassName('close')[0];
-    
-    closeBtn.onclick = function() {
+
+    function checkUrlParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        if (id === '0808') {
+            usePointsWithPassword();
+        }
+    }
+
+    // ページ読み込み時にURLパラメータをチェック
+    checkUrlParams();
+
+
+    closeBtn.onclick = function () {
         historyModal.style.display = 'none';
     }
-    
-    window.onclick = function(event) {
+
+    window.onclick = function (event) {
         if (event.target == historyModal) {
             historyModal.style.display = 'none';
         }
     }
-    
+
     document.getElementById('locationButton').addEventListener('click', () => {
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(() => {
@@ -202,24 +208,24 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('message').textContent = 'お使いのブラウザは位置情報をサポートしていません。';
         }
     });
-    
+
     document.getElementById('mapButton').addEventListener('click', () => {
         window.location.href = '/kanko/project//Map/index.html';
     });
-    
+
     document.getElementById('exchangeButton').addEventListener('click', () => {
         window.location.href = 'https://maps.app.goo.gl/koUq5F7UyFakbaNw5';
     });
-    
+
     initializeStamps();
     renderStamps();
     updatePointsDisplay();
-    
+
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     const reset = urlParams.get('reset');
     const use = urlParams.get('use');
-    
+
     if (reset === 'true' && use) {
         document.getElementById('message').textContent = `ポイントが消費され、スタンプが再度獲得可能になりました。${use}回抽選を行えます！`;
     } else if (id) {
