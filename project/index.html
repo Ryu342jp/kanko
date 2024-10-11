@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QRコードスタンプラリー</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <div id="app">
         <header>
@@ -22,8 +20,10 @@
         <div id="controls">
             <div class="button-row">
                 <button id="mapButton">Map</button>
-                <button id="locationButton">GPS権限を許可</button>
-                <!--<button id="usePointsButton">ポイントを使う</button>-->
+                <button id="locationButton">位置を確認</button>
+            </div>
+            <div class="button-row">
+                <button id="usePointsButton">ポイントを使う</button>
                 <button id="exchangeButton">交換所に行く</button>
             </div>
         </div>
@@ -36,9 +36,8 @@
         </div>
     </div>
     <footer style="padding: 20px; text-align: center; background-color: #f0f0f0;">
-        <p>キャッシュや閲覧履歴の削除を行うとポイントがリセットされるので、ご注意ください。</p>
-    </footer>
+  <p>キャッシュや閲覧履歴の削除を行うとポイントがリセットされるので、ご注意ください。</p>
+</footer>
     <script src="script.js"></script>
 </body>
-
 </html>
