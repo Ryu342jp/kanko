@@ -197,6 +197,8 @@ h1 {
     #controls .button-row {
         width: 100%;
         margin-bottom: 10px;
+        padding-left:10px;
+        padding-right:10px;
     }
 
     #controls .button-row:last-child {
