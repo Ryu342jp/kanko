@@ -10,7 +10,7 @@ const stampData = [
 let stamps = {};
 let sumPoints = 0;
 const usePoints = 20;
-const intervalTime = 1 * 2 * 1000; // 5分のインターバル（ミリ秒）
+const intervalTime = 1 * 2 * 1000; // 2秒のインターバル（ミリ秒）
 let lastStampTime = 0;
 
 function initializeStamps() {
@@ -82,6 +82,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 function handleStampAcquisition(id) {
+  if (id === '0808') {
+    usePointsWithoutPassword();
+    return;
+  }
+
   if (!stamps[id]) return;
 
   const currentTime = Date.now();
@@ -147,24 +152,23 @@ function showHistory() {
   historyModal.style.display = 'block';
 }
 
-function usePointsWithPassword() {
-  const password = prompt('パスワードを入力してください：');
-  if (password === '08') {
-    const use = Math.floor(sumPoints / usePoints);
-    sumPoints = sumPoints % usePoints;
-    Object.values(stamps).forEach(stamp => stamp.accessCount = 0);
-    saveData();
-    const currentUrl = new URL(window.location.href);
-    const baseUrl = `${currentUrl.protocol}//${currentUrl.host}${currentUrl.pathname}`;
-    const redirectUrl = `${baseUrl}?reset=true&use=${use}`;
-    window.location.href = redirectUrl;
-  } else {
-    document.getElementById('message').textContent = 'パスワードが間違っています。';
-  }
+function usePointsWithoutPassword() {
+  const use = Math.floor(sumPoints / usePoints);
+  sumPoints = sumPoints % usePoints;
+  Object.values(stamps).forEach(stamp => stamp.accessCount = 0);
+  saveData();
+  const currentUrl = new URL(window.location.href);
+  const baseUrl = `${currentUrl.protocol}//${currentUrl.host}${currentUrl.pathname}`;
+  const redirectUrl = `${baseUrl}?reset=true&use=${use}`;
+  window.location.href = redirectUrl;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('usePointsButton').addEventListener('click', usePointsWithPassword);
+  const usePointsButton = document.getElementById('usePointsButton');
+  if (usePointsButton) {
+    usePointsButton.style.display = 'none';
+  }
+
   document.getElementById('historyButton').addEventListener('click', showHistory);
 
   const historyModal = document.getElementById('historyModal');
