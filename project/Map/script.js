@@ -33,117 +33,136 @@ const locations = [
     { lat: 32.7438648263907, lng: 129.877825407665, name: 'JINS（ハマクロス411 2F)', limited: false, electronic: true, foods: false, url: 'shop/JINSハマクロス4112F.html', imageUrl: null },
 ];
 
-let map, userMarker;
-const defaultCenter = [32.74392196939944, 129.87867759617737];
-const defaultZoom = 16;
-const coordinateA = { lat: 32.74434829076686, lng: 129.87779131187102 };
-const coordinateB = { lat: 32.74276806394401, lng: 129.87662692514667 };
-let currentIndex = 0;
-
-function initMap() {
+  
+  let map, userMarker;
+  let initialLocationSet = false; // 初期位置が設定されたかどうかを追跡
+  
+  const defaultCenter = [32.74392196939944, 129.87867759617737];
+  const defaultZoom = 16;
+  
+  const coordinateA = { lat: 32.74434829076686, lng: 129.87779131187102 };
+  const coordinateB = { lat: 32.74276806394401, lng: 129.87662692514667 };
+  
+  let currentIndex = 0;
+  
+  function initMap() {
     map = L.map('map').setView(defaultCenter, defaultZoom);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 22
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 22
     }).addTo(map);
-
+  
     addAllMarkers();
     checkUserLocation();
+  
     map.on('zoomend', updateMarkers);
     map.on('moveend', checkCenterLocation);
     map.on('zoomend moveend', updateBottomPanel);
+  
     checkCenterLocation();
-}
-
-function addAllMarkers() {
+  }
+  
+  function addAllMarkers() {
     locations.forEach(location => {
-        addMarker(location);
+      addMarker(location);
     });
-}
-
-function addMarker(location) {
+  }
+  
+  function addMarker(location) {
     const marker = L.marker([location.lat, location.lng], {
-        icon: getIcon(location, map.getZoom())
+      icon: getIcon(location, map.getZoom())
     }).addTo(map);
     marker.on('click', () => {
-        map.setView([location.lat, location.lng], 18);
+      map.setView([location.lat, location.lng], 18);
     });
-}
-
-function getIcon(location, zoom) {
+  }
+  
+  function getIcon(location, zoom) {
     if (location.foods) {
-        return L.icon({ iconUrl: 'image/foods.png', iconSize: [32, 32] });
+      return L.icon({ iconUrl: 'image/foods.png', iconSize: [32, 32] });
     } else {
-        return L.icon({ iconUrl: 'image/shopping.png', iconSize: [32, 32] });
+      return L.icon({ iconUrl: 'image/shopping.png', iconSize: [32, 32] });
     }
-}
-
-function updateMarkers() {
+  }
+  
+  function updateMarkers() {
     const currentZoom = map.getZoom();
     map.eachLayer(layer => {
-        if (layer instanceof L.Marker && layer !== userMarker) {
-            const latlng = layer.getLatLng();
-            const location = locations.find(loc => loc.lat === latlng.lat && loc.lng === latlng.lng);
-            if (location) {
-                layer.setIcon(getIcon(location, currentZoom));
-            }
+      if (layer instanceof L.Marker && layer !== userMarker) {
+        const latlng = layer.getLatLng();
+        const location = locations.find(loc => loc.lat === latlng.lat && loc.lng === latlng.lng);
+        if (location) {
+          layer.setIcon(getIcon(location, currentZoom));
         }
+      }
     });
-}
-
-function checkUserLocation() {
-    if ("geolocation" in navigator) {
-        navigator.geolocation.watchPosition(position => {
-            const userLat = position.coords.latitude;
-            const userLng = position.coords.longitude;
-            const userLatLng = L.latLng(userLat, userLng);
-            if (userMarker) {
-                map.removeLayer(userMarker);
-            }
-            userMarker = L.marker(userLatLng, {
-                icon: L.divIcon({
-                    className: 'user-marker',
-                    html: '➤',
-                    iconSize: [20, 20]
-                })
-            }).addTo(map);
-            if (userLatLng.distanceTo(L.latLng(defaultCenter)) <= 1000) {
-                map.setView(userLatLng);
-            }
-        });
+  }
+  
+  function checkUserLocation() {
+    if ("geolocation" in navigator && !initialLocationSet) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+        const userLatLng = L.latLng(userLat, userLng);
+  
+        if (userMarker) {
+          map.removeLayer(userMarker);
+        }
+  
+        userMarker = L.marker(userLatLng, {
+          icon: L.divIcon({
+            className: 'user-marker',
+            html: '➤',
+            iconSize: [20, 20]
+          })
+        }).addTo(map);
+  
+        if (userLatLng.distanceTo(L.latLng(defaultCenter)) <= 1000) {
+          map.setView(userLatLng);
+        }
+  
+        initialLocationSet = true; // 初期位置を設定したことをマーク
+      }, error => {
+        console.error("位置情報の取得に失敗しました:", error);
+        initialLocationSet = true; // エラーの場合も初期設定完了とみなす
+      });
+    } else {
+      initialLocationSet = true; // geolocationが利用できない場合も初期設定完了とみなす
     }
-}
-
-const coordinates = {
+  }
+  
+  const coordinates = {
     A: { lat: 32.74434829076686, lng: 129.87779131187102, name: '浜町', radius: 500 },
     B: { lat: 32.74276806394401, lng: 129.87662692514667, name: '銅座', radius: 250 },
     C: { lat: 32.742187740055144, lng: 129.8793031779364, name: '思案橋', radius: 250 },
     D: { lat: 0, lng: 0, name: 'エリアD', radius: 400 }
-};
-
-function checkCenterLocation() {
+  };
+  
+  function checkCenterLocation() {
     const mapCenter = map.getCenter();
     const iconsContainer = document.getElementById('icons-container');
     iconsContainer.innerHTML = '';
     let closestArea = null;
     let minDistance = Infinity;
+  
     for (const [key, coord] of Object.entries(coordinates)) {
-        const distance = L.latLng(mapCenter).distanceTo(L.latLng(coord));
-        if (distance <= coord.radius && distance < minDistance) {
-            closestArea = key;
-            minDistance = distance;
-        }
+      const distance = L.latLng(mapCenter).distanceTo(L.latLng(coord));
+      if (distance <= coord.radius && distance < minDistance) {
+        closestArea = key;
+        minDistance = distance;
+      }
     }
+  
     if (closestArea) {
-        const area = coordinates[closestArea];
-        iconsContainer.innerHTML = `
-            <span class="area-name">${area.name}</span>
-            ${getIconsHTML(closestArea)}
-        `;
+      const area = coordinates[closestArea];
+      iconsContainer.innerHTML = `
+        <div class="area-name">${area.name}</div>
+        ${getIconsHTML(closestArea)}
+      `;
     }
-}
-
-function getIconsHTML(area) {
+  }
+  
+  function getIconsHTML(area) {
     switch (area) {
         case 'A':
             return `
@@ -170,80 +189,83 @@ function getIconsHTML(area) {
             return '';
     }
 }
-function updateBottomPanel() {
+  
+  function updateBottomPanel() {
     if (map.getZoom() < 17) {
-        document.getElementById('bottom-panel').style.display = 'none';
-        return;
+      document.getElementById('bottom-panel').style.display = 'none';
+      return;
     }
+  
     const center = map.getCenter();
     let closestLocation = locations[0];
     let minDistance = Infinity;
+  
     locations.forEach((location, index) => {
-        const distance = L.latLng(location.lat, location.lng).distanceTo(center);
-        if (distance < minDistance) {
-            minDistance = distance;
-            closestLocation = location;
-            currentIndex = index;
-        }
+      const distance = L.latLng(location.lat, location.lng).distanceTo(center);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestLocation = location;
+        currentIndex = index;
+      }
     });
+  
     updatePanelContent(closestLocation);
     document.getElementById('bottom-panel').style.display = 'flex';
-}
-
-function updatePanelContent(location) {
+  }
+  
+  function updatePanelContent(location) {
     document.getElementById('shop-image').src = location.imageUrl;
     document.getElementById('shop-name').textContent = location.name;
     document.getElementById('shop-detail').href = location.url;
-}
-
-function nextLocation() {
+  }
+  
+  function nextLocation() {
     currentIndex = (currentIndex + 1) % locations.length;
     const location = locations[currentIndex];
     updatePanelContent(location);
     map.setView([location.lat, location.lng], map.getZoom());
-}
-
-function prevLocation() {
+  }
+  
+  function prevLocation() {
     currentIndex = (currentIndex - 1 + locations.length) % locations.length;
     const location = locations[currentIndex];
     updatePanelContent(location);
     map.setView([location.lat, location.lng], map.getZoom());
-}
-
-document.addEventListener('DOMContentLoaded', () => {
+  }
+  
+  document.addEventListener('DOMContentLoaded', () => {
     initMap();
-
     const searchToggle = document.getElementById('search-toggle');
     const popup = document.getElementById('popup');
     const closePopup = document.getElementById('close-popup');
     const searchButton = document.getElementById('search-button');
-
+  
     searchToggle.addEventListener('click', () => {
-        popup.style.display = 'block';
+      popup.style.display = 'block';
     });
-
+  
     closePopup.addEventListener('click', () => {
-        popup.style.display = 'none';
+      popup.style.display = 'none';
     });
-
+  
     searchButton.addEventListener('click', () => {
-        const electronic = document.getElementById('electronic').checked;
-        const foods = document.getElementById('foods').checked;
-        const limited = document.getElementById('limited').checked;
-
-        map.eachLayer(layer => {
-            if (layer instanceof L.Marker && layer !== userMarker) {
-                const latlng = layer.getLatLng();
-                const location = locations.find(loc => loc.lat === latlng.lat && loc.lng === latlng.lng);
-                if (location) {
-                    const visible = (!electronic || location.electronic) &&
-                        (!foods || location.foods) &&
-                        (!limited || location.limited);
-                    layer.setOpacity(visible ? 1 : 0);
-                }
-            }
-        });
-
-        popup.style.display = 'none';
+      const electronic = document.getElementById('electronic').checked;
+      const foods = document.getElementById('foods').checked;
+      const limited = document.getElementById('limited').checked;
+  
+      map.eachLayer(layer => {
+        if (layer instanceof L.Marker && layer !== userMarker) {
+          const latlng = layer.getLatLng();
+          const location = locations.find(loc => loc.lat === latlng.lat && loc.lng === latlng.lng);
+          if (location) {
+            const visible = (!electronic || location.electronic) &&
+                            (!foods || location.foods) &&
+                            (!limited || location.limited);
+            layer.setOpacity(visible ? 1 : 0);
+          }
+        }
+      });
+  
+      popup.style.display = 'none';
     });
-});
+  });
