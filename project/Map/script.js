@@ -4,7 +4,7 @@ const locations = [
 {lat: 32.74202052, lng: 129.8766215, name: '鉄板や万菜', limited: true, electronic: true, foods: true, url: 'shop/鉄板や万菜.html', imageUrl: 'shopimage/鉄板や万菜.jpg'},
 {lat: 32.74195341, lng: 129.8766262, name: 'ダイニング藤蔵', limited: true, electronic: true, foods: true, url: 'shop/ダイニング藤蔵.html', imageUrl: 'shopimage/ダイニング藤蔵.jpg'},
 {lat: 32.74200252, lng: 129.8766146, name: 'Bar Le.Cinq(ルサンク)', limited: true, electronic: true, foods: true, url: 'shop/BarLeCinq(ルサンク).html', imageUrl: 'shopimage/BarLeCinq(ルサンク).jpg'},
-{lat: 32.74251498, lng: 129.8772611, name: '焼肉かくら　銅座店', limited: true, electronic: true, foods: true, url: 'shop/焼肉かくら銅座店.html', imageUrl: 'shopimage/焼肉かぐら銅座店.jpg'},
+{lat: 32.74251498, lng: 129.8772611, name: '焼肉かくら　銅座店', limited: true, electronic: true, foods: true, url: 'shop/焼肉かくら銅座店.html', imageUrl: 'shopimage/焼肉かくら銅座店.jpg'},
 {lat: 32.74270605, lng: 129.8773523, name: '三八　本店', limited: false, electronic: true, foods: true, url: 'shop/三八本店.html', imageUrl: 'shopimage/三八本店.jpg'},
 {lat: 32.74256581, lng: 129.8781407, name: 'SUNNY SIDE（サニーサイド）', limited: true, electronic: false, foods: true, url: 'shop/SUNNYSIDEサニーサイド.html', imageUrl: 'shopimage/SUNNYSIDEサニーサイド.jpg'},
 {lat: 32.74242757, lng: 129.8779054, name: 'スナック　律子', limited: true, electronic: true, foods: true, url: 'shop/スナック律子.html', imageUrl: 'shopimage/スナック律子.jpg'},
@@ -60,6 +60,7 @@ function initMap() {
 
   checkCenterLocation();
 }
+let selectedMarker = null;
 
 function addAllMarkers() {
   locations.forEach(location => {
@@ -67,25 +68,33 @@ function addAllMarkers() {
   });
 }
 
-let selectedMarker = null;
-
 function addMarker(location) {
   const marker = L.marker([location.lat, location.lng], {
     icon: getIcon(location, map.getZoom())
   }).addTo(map);
+  
   marker.on('click', () => {
-    if (selectedMarker) {
+    // 前に選択されていたマーカーのアイコンを元に戻す
+    if (selectedMarker && selectedMarker !== marker) {
       selectedMarker.setIcon(getIcon(selectedMarker.location, map.getZoom()));
     }
-    if (selectedMarker !== marker) {
-      marker.setIcon(getSelectedIcon(location, map.getZoom()));
-      selectedMarker = marker;
-      selectedMarker.location = location;
-    } else {
-      selectedMarker = null;
-    }
+
+    // 現在のマーカーを選択状態にする
+    marker.setIcon(getSelectedIcon(location, map.getZoom()));
+    selectedMarker = marker;
+
     map.setView([location.lat, location.lng], 18);
   });
+
+  marker.location = location; // マーカーにロケーション情報を追加
+}
+
+function getSelectedIcon(location, zoom) {
+  if (location.foods) {
+    return L.icon({ iconUrl: 'image/selected_foods.png', iconSize: [40, 40] });
+  } else {
+    return L.icon({ iconUrl: 'image/selected_shopping.png', iconSize: [40, 40] });
+  }
 }
 
 function getIcon(location, zoom) {
@@ -96,14 +105,6 @@ function getIcon(location, zoom) {
   }
 }
 
-function getSelectedIcon(location, zoom) {
-  if (location.foods) {
-    return L.icon({ iconUrl: 'image/selected_foods.png', iconSize: [32, 32] });
-  } else {
-    return L.icon({ iconUrl: 'image/selected_shopping.png', iconSize: [32, 32] });
-  }
-}
-
 function updateMarkers() {
   const currentZoom = map.getZoom();
   map.eachLayer(layer => {
@@ -111,11 +112,7 @@ function updateMarkers() {
       const latlng = layer.getLatLng();
       const location = locations.find(loc => loc.lat === latlng.lat && loc.lng === latlng.lng);
       if (location) {
-        if (layer === selectedMarker) {
-          layer.setIcon(getSelectedIcon(location, currentZoom));
-        } else {
-          layer.setIcon(getIcon(location, currentZoom));
-        }
+        layer.setIcon(getIcon(location, currentZoom));
       }
     }
   });
