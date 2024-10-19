@@ -37,7 +37,7 @@ const locations = [
   let initialLocationSet = false; // 初期位置が設定されたかどうかを追跡
   
   const defaultCenter = [32.74392196939944, 129.87867759617737];
-  const defaultZoom = 16;
+  const defaultZoom = 17;
   
   const coordinateA = { lat: 32.74434829076686, lng: 129.87779131187102 };
   const coordinateB = { lat: 32.74276806394401, lng: 129.87662692514667 };
