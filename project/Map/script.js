@@ -1,5 +1,5 @@
 const locations = [
-    {lat: 32.74328627, lng: 129.877567, name: 'カラオケバー　モンキーガール', limited: true, electronic: true, foods: true, url: 'shop/カラオケバーモンキーガール.html', imageUrl: 'shopimage/カラオケバーモンキーガール.jpg'},
+  {lat: 32.74328627, lng: 129.877567, name: 'カラオケバー　モンキーガール', limited: true, electronic: true, foods: true, url: 'shop/カラオケバーモンキーガール.html', imageUrl: 'shopimage/カラオケバーモンキーガール.jpg'},
 {lat: 32.7425643758711, lng: 129.877097021549, name: '銀鍋', limited: true, electronic: true, foods: true, url: 'shop/銀鍋.html', imageUrl: 'shopimage/銀鍋.jpg'},
 {lat: 32.74202052, lng: 129.8766215, name: '鉄板や万菜', limited: true, electronic: true, foods: true, url: 'shop/鉄板や万菜.html', imageUrl: 'shopimage/鉄板や万菜.jpg'},
 {lat: 32.74195341, lng: 129.8766262, name: 'ダイニング藤蔵', limited: true, electronic: true, foods: true, url: 'shop/ダイニング藤蔵.html', imageUrl: 'shopimage/ダイニング藤蔵.jpg'},
@@ -32,239 +32,263 @@ const locations = [
 {lat: 32.7428512014025, lng: 129.878086196631, name: '銅座稲荷神社', limited: false, electronic: false, foods: false, url: 'shop/銅座稲荷神社.html', imageUrl: 'shopimage/銅座稲荷神社.jpg'},
 ];
 
-  
-  let map, userMarker;
-  let initialLocationSet = false; // 初期位置が設定されたかどうかを追跡
-  
-  const defaultCenter = [32.74392196939944, 129.87867759617737];
-  const defaultZoom = 17;
-  
-  const coordinateA = { lat: 32.74434829076686, lng: 129.87779131187102 };
-  const coordinateB = { lat: 32.74276806394401, lng: 129.87662692514667 };
-  
-  let currentIndex = 0;
-  
-  function initMap() {
-    map = L.map('map').setView(defaultCenter, defaultZoom);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-      maxZoom: 22
-    }).addTo(map);
-  
-    addAllMarkers();
-    checkUserLocation();
-  
-    map.on('zoomend', updateMarkers);
-    map.on('moveend', checkCenterLocation);
-    map.on('zoomend moveend', updateBottomPanel);
-  
-    checkCenterLocation();
-  }
-  
-  function addAllMarkers() {
-    locations.forEach(location => {
-      addMarker(location);
-    });
-  }
-  
-  function addMarker(location) {
-    const marker = L.marker([location.lat, location.lng], {
-      icon: getIcon(location, map.getZoom())
-    }).addTo(map);
-    marker.on('click', () => {
-      map.setView([location.lat, location.lng], 18);
-    });
-  }
-  
-  function getIcon(location, zoom) {
-    if (location.foods) {
-      return L.icon({ iconUrl: 'image/foods.png', iconSize: [32, 32] });
+
+let map, userMarker;
+let initialLocationSet = false; // 初期位置が設定されたかどうかを追跡
+
+const defaultCenter = [32.74392196939944, 129.87867759617737];
+const defaultZoom = 17;
+
+const coordinateA = { lat: 32.74434829076686, lng: 129.87779131187102 };
+const coordinateB = { lat: 32.74276806394401, lng: 129.87662692514667 };
+
+let currentIndex = 0;
+
+function initMap() {
+  map = L.map('map').setView(defaultCenter, defaultZoom);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 22
+  }).addTo(map);
+
+  addAllMarkers();
+  checkUserLocation();
+
+  map.on('zoomend', updateMarkers);
+  map.on('moveend', checkCenterLocation);
+  map.on('zoomend moveend', updateBottomPanel);
+
+  checkCenterLocation();
+}
+
+function addAllMarkers() {
+  locations.forEach(location => {
+    addMarker(location);
+  });
+}
+
+let selectedMarker = null;
+
+function addMarker(location) {
+  const marker = L.marker([location.lat, location.lng], {
+    icon: getIcon(location, map.getZoom())
+  }).addTo(map);
+  marker.on('click', () => {
+    if (selectedMarker) {
+      selectedMarker.setIcon(getIcon(selectedMarker.location, map.getZoom()));
+    }
+    if (selectedMarker !== marker) {
+      marker.setIcon(getSelectedIcon(location, map.getZoom()));
+      selectedMarker = marker;
+      selectedMarker.location = location;
     } else {
-      return L.icon({ iconUrl: 'image/shopping.png', iconSize: [32, 32] });
+      selectedMarker = null;
+    }
+    map.setView([location.lat, location.lng], 18);
+  });
+}
+
+function getIcon(location, zoom) {
+  if (location.foods) {
+    return L.icon({ iconUrl: 'image/foods.png', iconSize: [32, 32] });
+  } else {
+    return L.icon({ iconUrl: 'image/shopping.png', iconSize: [32, 32] });
+  }
+}
+
+function getSelectedIcon(location, zoom) {
+  if (location.foods) {
+    return L.icon({ iconUrl: 'image/selected_foods.png', iconSize: [32, 32] });
+  } else {
+    return L.icon({ iconUrl: 'image/selected_shopping.png', iconSize: [32, 32] });
+  }
+}
+
+function updateMarkers() {
+  const currentZoom = map.getZoom();
+  map.eachLayer(layer => {
+    if (layer instanceof L.Marker && layer !== userMarker) {
+      const latlng = layer.getLatLng();
+      const location = locations.find(loc => loc.lat === latlng.lat && loc.lng === latlng.lng);
+      if (location) {
+        if (layer === selectedMarker) {
+          layer.setIcon(getSelectedIcon(location, currentZoom));
+        } else {
+          layer.setIcon(getIcon(location, currentZoom));
+        }
+      }
+    }
+  });
+}
+
+function checkUserLocation() {
+  if ("geolocation" in navigator && !initialLocationSet) {
+    navigator.geolocation.getCurrentPosition(position => {
+      const userLat = position.coords.latitude;
+      const userLng = position.coords.longitude;
+      const userLatLng = L.latLng(userLat, userLng);
+
+      if (userMarker) {
+        map.removeLayer(userMarker);
+      }
+
+      userMarker = L.marker(userLatLng, {
+        icon: L.divIcon({
+          className: 'user-marker',
+          html: '➤',
+          iconSize: [20, 20]
+        })
+      }).addTo(map);
+
+      if (userLatLng.distanceTo(L.latLng(defaultCenter)) <= 1000) {
+        map.setView(userLatLng);
+      }
+
+      initialLocationSet = true; // 初期位置を設定したことをマーク
+    }, error => {
+      console.error("位置情報の取得に失敗しました:", error);
+      initialLocationSet = true; // エラーの場合も初期設定完了とみなす
+    });
+  } else {
+    initialLocationSet = true; // geolocationが利用できない場合も初期設定完了とみなす
+  }
+}
+
+const coordinates = {
+  A: { lat: 32.74434829076686, lng: 129.87779131187102, name: '浜町', radius: 500 },
+  B: { lat: 32.74276806394401, lng: 129.87662692514667, name: '銅座', radius: 250 },
+  C: { lat: 32.742187740055144, lng: 129.8793031779364, name: '思案橋', radius: 250 },
+  D: { lat: 0, lng: 0, name: 'エリアD', radius: 400 }
+};
+
+function checkCenterLocation() {
+  const mapCenter = map.getCenter();
+  const iconsContainer = document.getElementById('icons-container');
+  iconsContainer.innerHTML = '';
+  let closestArea = null;
+  let minDistance = Infinity;
+
+  for (const [key, coord] of Object.entries(coordinates)) {
+    const distance = L.latLng(mapCenter).distanceTo(L.latLng(coord));
+    if (distance <= coord.radius && distance < minDistance) {
+      closestArea = key;
+      minDistance = distance;
     }
   }
-  
-  function updateMarkers() {
-    const currentZoom = map.getZoom();
+
+  if (closestArea) {
+    const area = coordinates[closestArea];
+    iconsContainer.innerHTML = `
+      <div class="area-name">${area.name}</div>
+      ${getIconsHTML(closestArea)}
+    `;
+  }
+}
+
+function getIconsHTML(area) {
+  switch (area) {
+      case 'A':
+          return `
+              <a href="https://www.hamanmachi.com" target="_blank"><img src="image/hama.png" alt="公式ホームページ"></a>
+              <a href="https://www.google.com/search?q=instagram+hama_bura" target="_blank" rel="noreferrer"><img src="image/insta.png" alt="インスタグラム"></a>
+          `;
+      case 'B':
+          return `
+              <a href="https://www.nagasaki-douza.com/" target="_blank"><img src="image/doza.png" alt="公式ホームページ"></a>
+              <a href="https://www.google.com/search?q=%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF+douzagram" target="_blank"><img src="image/insta.png" alt="インスタグラム"></a>
+          `;
+      case 'C':
+          return `
+              <a href="https://shiannbashi-yokocho.com/" target="_blank"><img src="image/sia.png" alt="公式ホームページ"></a>
+              <a href="https://www.google.com/search?q=インスタグラム+shiannbashiyokocho" target="_blank"><img src="image/insta.png" alt="インスタグラム"></a>
+              <a href="https://lin.ee/KOjOjQS" target="_blank"><img src="image/line.png" alt="公式ライン"></a>
+              <a href="https://www.google.com/search?q=Facebook+shiannbashiyokocho" target="_blank"><img src="image/face.png" alt="Facebook"></a>
+          `;
+      case 'D':
+          return `
+              <!-- DエリアのアイコンHTMLを追加 -->
+          `;
+      default:
+          return '';
+  }
+}
+
+function updateBottomPanel() {
+  if (map.getZoom() < 17) {
+    document.getElementById('bottom-panel').style.display = 'none';
+    return;
+  }
+
+  const center = map.getCenter();
+  let closestLocation = locations[0];
+  let minDistance = Infinity;
+
+  locations.forEach((location, index) => {
+    const distance = L.latLng(location.lat, location.lng).distanceTo(center);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestLocation = location;
+      currentIndex = index;
+    }
+  });
+
+  updatePanelContent(closestLocation);
+  document.getElementById('bottom-panel').style.display = 'flex';
+}
+
+function updatePanelContent(location) {
+  document.getElementById('shop-image').src = 'shop/' + location.imageUrl;
+  document.getElementById('shop-name').textContent = location.name;
+  document.getElementById('shop-detail').href = location.url;
+}
+
+function nextLocation() {
+  currentIndex = (currentIndex + 1) % locations.length;
+  const location = locations[currentIndex];
+  updatePanelContent(location);
+  map.setView([location.lat, location.lng], map.getZoom());
+}
+
+function prevLocation() {
+  currentIndex = (currentIndex - 1 + locations.length) % locations.length;
+  const location = locations[currentIndex];
+  updatePanelContent(location);
+  map.setView([location.lat, location.lng], map.getZoom());
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initMap();
+  const searchToggle = document.getElementById('search-toggle');
+  const popup = document.getElementById('popup');
+  const closePopup = document.getElementById('close-popup');
+  const searchButton = document.getElementById('search-button');
+
+  searchToggle.addEventListener('click', () => {
+    popup.style.display = 'block';
+  });
+
+  closePopup.addEventListener('click', () => {
+    popup.style.display = 'none';
+  });
+
+  searchButton.addEventListener('click', () => {
+    const electronic = document.getElementById('electronic').checked;
+    const foods = document.getElementById('foods').checked;
+    const limited = document.getElementById('limited').checked;
+
     map.eachLayer(layer => {
       if (layer instanceof L.Marker && layer !== userMarker) {
         const latlng = layer.getLatLng();
         const location = locations.find(loc => loc.lat === latlng.lat && loc.lng === latlng.lng);
         if (location) {
-          layer.setIcon(getIcon(location, currentZoom));
+          const visible = (!electronic || location.electronic) &&
+                          (!foods || location.foods) &&
+                          (!limited || location.limited);
+          layer.setOpacity(visible ? 1 : 0);
         }
       }
     });
-  }
-  
-  function checkUserLocation() {
-    if ("geolocation" in navigator && !initialLocationSet) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const userLat = position.coords.latitude;
-        const userLng = position.coords.longitude;
-        const userLatLng = L.latLng(userLat, userLng);
-  
-        if (userMarker) {
-          map.removeLayer(userMarker);
-        }
-  
-        userMarker = L.marker(userLatLng, {
-          icon: L.divIcon({
-            className: 'user-marker',
-            html: '➤',
-            iconSize: [20, 20]
-          })
-        }).addTo(map);
-  
-        if (userLatLng.distanceTo(L.latLng(defaultCenter)) <= 1000) {
-          map.setView(userLatLng);
-        }
-  
-        initialLocationSet = true; // 初期位置を設定したことをマーク
-      }, error => {
-        console.error("位置情報の取得に失敗しました:", error);
-        initialLocationSet = true; // エラーの場合も初期設定完了とみなす
-      });
-    } else {
-      initialLocationSet = true; // geolocationが利用できない場合も初期設定完了とみなす
-    }
-  }
-  
-  const coordinates = {
-    A: { lat: 32.74434829076686, lng: 129.87779131187102, name: '浜町', radius: 500 },
-    B: { lat: 32.74276806394401, lng: 129.87662692514667, name: '銅座', radius: 250 },
-    C: { lat: 32.742187740055144, lng: 129.8793031779364, name: '思案橋', radius: 250 },
-    D: { lat: 0, lng: 0, name: 'エリアD', radius: 400 }
-  };
-  
-  function checkCenterLocation() {
-    const mapCenter = map.getCenter();
-    const iconsContainer = document.getElementById('icons-container');
-    iconsContainer.innerHTML = '';
-    let closestArea = null;
-    let minDistance = Infinity;
-  
-    for (const [key, coord] of Object.entries(coordinates)) {
-      const distance = L.latLng(mapCenter).distanceTo(L.latLng(coord));
-      if (distance <= coord.radius && distance < minDistance) {
-        closestArea = key;
-        minDistance = distance;
-      }
-    }
-  
-    if (closestArea) {
-      const area = coordinates[closestArea];
-      iconsContainer.innerHTML = `
-        <div class="area-name">${area.name}</div>
-        ${getIconsHTML(closestArea)}
-      `;
-    }
-  }
-  
-  function getIconsHTML(area) {
-    switch (area) {
-        case 'A':
-            return `
-                <a href="https://www.hamanmachi.com" target="_blank"><img src="image/hama.png" alt="公式ホームページ"></a>
-                <a href="https://www.google.com/search?q=instagram+hama_bura" target="_blank" rel="noreferrer"><img src="image/insta.png" alt="インスタグラム"></a>
-            `;
-        case 'B':
-            return `
-                <a href="https://www.nagasaki-douza.com/" target="_blank"><img src="image/doza.png" alt="公式ホームページ"></a>
-                <a href="https://www.google.com/search?q=%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF+douzagram" target="_blank"><img src="image/insta.png" alt="インスタグラム"></a>
-            `;
-        case 'C':
-            return `
-                <a href="https://shiannbashi-yokocho.com/" target="_blank"><img src="image/sia.png" alt="公式ホームページ"></a>
-                <a href="https://www.google.com/search?q=インスタグラム+shiannbashiyokocho" target="_blank"><img src="image/insta.png" alt="インスタグラム"></a>
-                <a href="https://lin.ee/KOjOjQS" target="_blank"><img src="image/line.png" alt="公式ライン"></a>
-                <a href="https://www.google.com/search?q=Facebook+shiannbashiyokocho" target="_blank"><img src="image/face.png" alt="Facebook"></a>
-            `;
-        case 'D':
-            return `
-                <!-- DエリアのアイコンHTMLを追加 -->
-            `;
-        default:
-            return '';
-    }
-}
-  
-  function updateBottomPanel() {
-    if (map.getZoom() < 17) {
-      document.getElementById('bottom-panel').style.display = 'none';
-      return;
-    }
-  
-    const center = map.getCenter();
-    let closestLocation = locations[0];
-    let minDistance = Infinity;
-  
-    locations.forEach((location, index) => {
-      const distance = L.latLng(location.lat, location.lng).distanceTo(center);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestLocation = location;
-        currentIndex = index;
-      }
-    });
-  
-    updatePanelContent(closestLocation);
-    document.getElementById('bottom-panel').style.display = 'flex';
-  }
-  
-  function updatePanelContent(location) {
-    document.getElementById('shop-image').src = 'shop/' + location.imageUrl;
-    document.getElementById('shop-name').textContent = location.name;
-    document.getElementById('shop-detail').href = location.url;
-  }
-  
-  function nextLocation() {
-    currentIndex = (currentIndex + 1) % locations.length;
-    const location = locations[currentIndex];
-    updatePanelContent(location);
-    map.setView([location.lat, location.lng], map.getZoom());
-  }
-  
-  function prevLocation() {
-    currentIndex = (currentIndex - 1 + locations.length) % locations.length;
-    const location = locations[currentIndex];
-    updatePanelContent(location);
-    map.setView([location.lat, location.lng], map.getZoom());
-  }
-  
-  document.addEventListener('DOMContentLoaded', () => {
-    initMap();
-    const searchToggle = document.getElementById('search-toggle');
-    const popup = document.getElementById('popup');
-    const closePopup = document.getElementById('close-popup');
-    const searchButton = document.getElementById('search-button');
-  
-    searchToggle.addEventListener('click', () => {
-      popup.style.display = 'block';
-    });
-  
-    closePopup.addEventListener('click', () => {
-      popup.style.display = 'none';
-    });
-  
-    searchButton.addEventListener('click', () => {
-      const electronic = document.getElementById('electronic').checked;
-      const foods = document.getElementById('foods').checked;
-      const limited = document.getElementById('limited').checked;
-  
-      map.eachLayer(layer => {
-        if (layer instanceof L.Marker && layer !== userMarker) {
-          const latlng = layer.getLatLng();
-          const location = locations.find(loc => loc.lat === latlng.lat && loc.lng === latlng.lng);
-          if (location) {
-            const visible = (!electronic || location.electronic) &&
-                            (!foods || location.foods) &&
-                            (!limited || location.limited);
-            layer.setOpacity(visible ? 1 : 0);
-          }
-        }
-      });
-  
-      popup.style.display = 'none';
-    });
+
+    popup.style.display = 'none';
   });
+});
