@@ -213,7 +213,7 @@ const locations = [
   }
   
   function updatePanelContent(location) {
-    document.getElementById('shop-image').src = location.imageUrl;
+    document.getElementById('shop-image').src = 'shop/' + location.imageUrl;
     document.getElementById('shop-name').textContent = location.name;
     document.getElementById('shop-detail').href = location.url;
   }
