@@ -25,7 +25,7 @@ const locations = [
 {lat: 32.7431749236103, lng: 129.87868542797, name: '松尾酒店', limited: true, electronic: false, foods: true, url: 'shop/松尾酒店.html', imageUrl: 'shopimage/松尾酒店.jpg'},
 {lat: 32.7439145258782, lng: 129.87854908202, name: 'メガネのヨネザワ浜町店', limited: true, electronic: true, foods: false, url: 'shop/メガネのヨネザワ浜町店.html', imageUrl: 'shopimage/メガネのヨネザワ浜町店.jpg'},
 {lat: 32.7438174132823, lng: 129.87821461008, name: 'BRAND SHOP REFLET', limited: true, electronic: true, foods: false, url: 'shop/BRANDSHOPREFLET.html', imageUrl: 'shopimage/BRANDSHOPREFLET.jpg'},
-{lat: 32.7438914291686, lng: 129.877377900262, name: '五島うどん居酒屋　だしぼんず', limited: true, electronic: true, foods: true, url: 'shop/五島うどん居酒屋だしぼんず.html', imageUrl: 'shopimage/五島うどん居酒屋だしぽんず.jpg'},
+{lat: 32.7438914291686, lng: 129.877377900262, name: '五島うどん居酒屋　だしぼんず', limited: true, electronic: true, foods: true, url: 'shop/五島うどん居酒屋だしぼんず.html', imageUrl: 'shopimage/五島うどん居酒屋だしぼんず.jpg'},
 {lat: 32.74372392724, lng: 129.879072328643, name: 'おしゃれの店博多屋', limited: true, electronic: true, foods: false, url: 'shop/おしゃれの店博多屋.html', imageUrl: 'shopimage/おしゃれの店博多屋.jpg'},
 {lat: 32.7438648263907, lng: 129.877825407665, name: 'JINS（ハマクロス411 2F)', limited: false, electronic: true, foods: false, url: 'shop/JINSハマクロス4112F.html', imageUrl: 'shopimage/JINSハマクロス4112F.jpg'},
 {lat: 32.7439989496982, lng: 129.878330896824, name: 'ソフトバンク浜町', limited: false, electronic: true, foods: false, url: 'shop/ソフトバンク浜町.html', imageUrl: 'shopimage/ソフトバンク浜町.jpg'},
@@ -132,7 +132,7 @@ function checkUserLocation() {
       userMarker = L.marker(userLatLng, {
         icon: L.divIcon({
           className: 'user-marker',
-          html: '➤',
+          html: '◎',
           iconSize: [20, 20]
         })
       }).addTo(map);
