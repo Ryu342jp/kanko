@@ -28,7 +28,7 @@ const locations = [
 {lat: 32.7438914291686, lng: 129.877377900262, name: '五島うどん居酒屋　だしぼんず', limited: true, electronic: true, foods: true, url: 'shop/五島うどん居酒屋だしぼんず.html', imageUrl: 'shopimage/五島うどん居酒屋だしぼんず.jpg'},
 {lat: 32.74372392724, lng: 129.879072328643, name: 'おしゃれの店博多屋', limited: true, electronic: true, foods: false, url: 'shop/おしゃれの店博多屋.html', imageUrl: 'shopimage/おしゃれの店博多屋.jpg'},
 {lat: 32.7438648263907, lng: 129.877825407665, name: 'JINS（ハマクロス411 2F)', limited: false, electronic: true, foods: false, url: 'shop/JINSハマクロス4112F.html', imageUrl: 'shopimage/JINSハマクロス4112F.jpg'},
-{lat: 32.7439989496982, lng: 129.878330896824, name: 'ソフトバンク浜町', limited: false, electronic: true, foods: false, url: 'shop/ソフトバンク浜町.html', imageUrl: 'shopimage/ソフトバンク浜町.jpg'},
+{lat: 32.7439989496982, lng: 129.878330896824, name: 'ソフトバンク長崎浜町', limited: false, electronic: true, foods: false, url: 'shop/ソフトバンク長崎浜町.html', imageUrl: 'shopimage/ソフトバンク長崎浜町.jpg'},
 {lat: 32.7428512014025, lng: 129.878086196631, name: '銅座稲荷神社', limited: false, electronic: false, foods: false, url: 'shop/銅座稲荷神社.html', imageUrl: 'shopimage/銅座稲荷神社.jpg'},
 ];
 
