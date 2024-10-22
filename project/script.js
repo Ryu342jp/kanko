@@ -34,7 +34,7 @@ const stampData = [
 {id: '388287138', image: 'stampimage/五島うどん居酒屋だしぽんず.png', points: 1, lat: 32.7438914291686, lon: 129.877377900262, radius: 6000, name: '五島うどん居酒屋　だしぼんず'},
 {id: '809583866', image: 'stampimage/おしゃれの店博多屋.png', points: 1, lat: 32.74372392724, lon: 129.879072328643, radius: 6000, name: 'おしゃれの店博多屋'},
 {id: '731434651', image: 'stampimage/JINS.png', points: 1, lat: 32.7438648263907, lon: 129.877825407665, radius: 6000, name: 'JINS（ハマクロス411 2F)'},
-{id: '651221759', image: 'stampimage/ソフトバンク浜町.png', points: 1, lat: 32.7439989496982, lon: 129.878330896824, radius: 6000, name: 'ソフトバンク浜町'},
+{id: '651221759', image: 'stampimage/ソフトバンク長崎浜町.png', points: 1, lat: 32.7439989496982, lon: 129.878330896824, radius: 6000, name: 'ソフトバンク長崎浜町'},
 {id: '361535677', image: 'stampimage/銅座稲荷神社.png', points: 1, lat: 32.7428512014025, lon: 129.878086196631, radius: 6000, name: '銅座稲荷神社'},
 ];
 
