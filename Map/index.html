@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スポットマップ</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="icons-container"></div>
+    <div id="bottom-panel">
+        <img id="shop-image" src="" alt="店舗画像">
+        <div id="shop-info">
+            <h3 id="shop-name"></h3>
+            <a id="shop-detail" href="#" class="detail-button">詳しく見る</a>
+        </div>
+        <button onclick="prevLocation()">◀</button>
+        <button onclick="nextLocation()">▶</button>
+    </div>
+    <div id="point-container">
+        <button onclick="location.href = '../index.html'">
+            <img id="point-icon" src="image/point.png">
+        </button>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
