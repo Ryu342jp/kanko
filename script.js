@@ -1,9 +1,9 @@
 const stampData = [
-  {id: '543323256', image: 'stampimage/oura.png', points: 1, lat: 32.74328627, lon: 129.877567, radius: 100, name: '大浦天主堂'},
-{id: '479632480', image: 'stampimage/matsugae.png', points: 1, lat: 32.7344437238626, lon: 129.869944540613, radius: 500, name: '松が枝公園'},
-{id: '984582920', image: 'stampimage/kozone.png', points: 1, lat: 32.7352229595697, lon: 129.871455290353, radius: 500, name: '小曽根公園'},
-{id: '984131751', image: 'stampimage/kinen.png', points: 1, lat: 32.7338507436866, lon: 129.867392442194, radius: 500, name: '祈念坂'},
-{id: '656108992', image: 'stampimage/dondon.png', points: 1, lat: 32.7339218887299, lon: 129.870360232649, radius: 500, name: 'どんどん坂'},
+  {id: '543323256', image: 'stampimage/oura.png', points: 1, lat: 32.74328627, lon: 129.877567, radius: 100000, name: '大浦天主堂'},
+{id: '479632480', image: 'stampimage/matsugae.png', points: 1, lat: 32.7344437238626, lon: 129.869944540613, radius: 100000, name: '松が枝公園'},
+{id: '984582920', image: 'stampimage/kozone.png', points: 1, lat: 32.7352229595697, lon: 129.871455290353, radius: 100000, name: '小曽根公園'},
+{id: '984131751', image: 'stampimage/kinen.png', points: 1, lat: 32.7338507436866, lon: 129.867392442194, radius: 100000, name: '祈念坂'},
+{id: '656108992', image: 'stampimage/dondon.png', points: 1, lat: 32.7339218887299, lon: 129.870360232649, radius: 100000, name: 'どんどん坂'},
 ];
 
 let stamps = {};
