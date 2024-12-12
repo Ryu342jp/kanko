@@ -193,11 +193,11 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.getElementById('mapButton').addEventListener('click', () => {
-    window.location.href = '/kanko/Map/index.html';
+    window.location.href = '/kanko/project//Map/index.html';
   });
 
   document.getElementById('exchangeButton').addEventListener('click', () => {
-    window.location.href = 'https:/maps.app.goo.gl/koUq5F7UyFakbaNw5';
+    window.location.href = 'https://maps.app.goo.gl/UWgBYGHxAVMwML1Y7';
   });
 
   initializeStamps();
