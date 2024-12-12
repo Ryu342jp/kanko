@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.getElementById('mapButton').addEventListener('click', () => {
-    window.location.href = '/kanko/project//Map/index.html';
+    window.location.href = '/kanko/Map/index.html';
   });
 
   document.getElementById('exchangeButton').addEventListener('click', () => {
