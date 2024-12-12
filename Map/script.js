@@ -4,8 +4,8 @@ const locations = [
   {lat: 32.7338507436866, lng: 129.867392442194, name: '小曽根公園', limited: false, electronic: false, foods: false, url: 'shop/kozone.html', imageUrl: 'shop/shopimage/none'},
   {lat: 32.7339218887299, lng: 129.870360232649, name: '祈念坂', limited: false, electronic: false, foods: false, url: 'shop/kinen.html', imageUrl: 'shop/shopimage/none'},
   {lat: 32.7316032212982, lng: 129.866896867615, name: 'どんどん坂', limited: false, electronic: false, foods: false, url: 'shop/dondon.html', imageUrl: 'shop/shopimage/none'},
-  {lat: 32.73390553577598,lng:129.87282338884566, name: 'HUBsIshibashi(13日交換所)', limited: false, electronic: false, foods: false, url: 'https://55hubs.localinfo.jp/', imageUrl: 'shop/shopimage/HUB'},
-  //{lat: 32.73435844854654, lng: 129.86922078278042 , name: 'グラバー園(14日交換所)', limited: false, electronic: false, foods: false, url: 'https://glover-garden.jp/', imageUrl: 'shop/shopimage/grab'},
+  {lat: 32.73390553577598,lng:129.87282338884566, name: 'HUBsIshibashi(13日交換所)', limited: false, electronic: false, foods: true, url: 'https://55hubs.localinfo.jp/', imageUrl: 'shop/shopimage/HUB'},
+  //{lat: 32.73435844854654, lng: 129.86922078278042 , name: 'グラバー園(14日交換所)', limited: false, electronic: false, foods: true, url: 'https://glover-garden.jp/', imageUrl: 'shop/shopimage/grab'},
 ];
 
 
