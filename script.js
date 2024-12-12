@@ -125,29 +125,28 @@ function showHistory() {
   const historyModal = document.getElementById('historyModal');
   const historyContent = document.getElementById('historyContent');
   if (!historyContent) {
-    console.error('historyContent element not found');
+    console.error('historyContent要素が見つかりません');
     return;
   }
 
-  let historyHTML = '<ul>';
-  let hasHistory = false;
-
+  // すべてのスタンプの履歴を1つの配列にまとめる
+  let allHistory = [];
   Object.values(stamps).forEach(stamp => {
-    stamp.history.forEach(entry => {
-      historyHTML += `<li>${entry.time} - ${entry.name}</li>`;
-      hasHistory = true;
-    });
+    allHistory = allHistory.concat(stamp.history);
   });
 
-  historyHTML += '</ul>';
+  // 履歴を時間順にソート
+  allHistory.sort((a, b) => new Date(b.time) - new Date(a.time));
 
-  if (!hasHistory) {
-    historyHTML = '<p>履歴がありません。</p>';
-  }
+  // ソートされた履歴をHTMLに変換
+  let historyHTML = allHistory.length > 0 ? 
+    allHistory.map(entry => `<p>${entry.time}: ${entry.name}</p>`).join('') :
+    '<p>履歴がありません。</p>';
 
   historyContent.innerHTML = historyHTML;
   historyModal.style.display = 'block';
 }
+
 
 function usePointsWithoutPassword() {
   const use = Math.floor(sumPoints / usePoints);
