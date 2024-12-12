@@ -69,7 +69,7 @@ function getSelectedIcon(location, zoom) {
   if (location.foods) {
     return L.icon({ iconUrl: 'image/selected_foods.png', iconSize: [40, 40] });
   } else {
-    return L.icon({ iconUrl: 'image/selected_shopping.png', iconSize: [40, 40] });
+    return L.icon({ iconUrl: 'image/selected_star.png', iconSize: [40, 40] });
   }
 }
 
@@ -77,7 +77,7 @@ function getIcon(location, zoom) {
   if (location.foods) {
     return L.icon({ iconUrl: 'image/foods.png', iconSize: [32, 32] });
   } else {
-    return L.icon({ iconUrl: 'image/shopping.png', iconSize: [32, 32] });
+    return L.icon({ iconUrl: 'image/image/star.png', iconSize: [32, 32] });
   }
 }
 
