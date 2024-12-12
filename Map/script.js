@@ -4,6 +4,8 @@ const locations = [
   {lat: 32.7338507436866, lng: 129.867392442194, name: '小曽根公園', limited: false, electronic: false, foods: false, url: 'shop/kozone.html', imageUrl: 'shop/shopimage/none'},
   {lat: 32.7339218887299, lng: 129.870360232649, name: '祈念坂', limited: false, electronic: false, foods: false, url: 'shop/kinen.html', imageUrl: 'shop/shopimage/none'},
   {lat: 32.7316032212982, lng: 129.866896867615, name: 'どんどん坂', limited: false, electronic: false, foods: false, url: 'shop/dondon.html', imageUrl: 'shop/shopimage/none'},
+  {lat: 32.73390553577598,lng:129.87282338884566, name: 'HUBsIshibashi(13日交換所)', limited: false, electronic: false, foods: false, url: 'shop/kinen.html', imageUrl: 'shop/shopimage/HUB'},
+  //{lat: 32.73435844854654, lng: 129.86922078278042 , name: 'グラバー園(14日交換所)', limited: false, electronic: false, foods: false, url: 'shop/dondon.html', imageUrl: 'shop/shopimage/grab'},
 ];
 
 
@@ -67,7 +69,7 @@ function getSelectedIcon(location, zoom) {
   if (location.foods) {
     return L.icon({ iconUrl: 'image/selected_foods.png', iconSize: [40, 40] });
   } else {
-    return L.icon({ iconUrl: 'image/selected_star.png', iconSize: [40, 40] });
+    return L.icon({ iconUrl: 'image/selected_shopping.png', iconSize: [40, 40] });
   }
 }
 
@@ -75,7 +77,7 @@ function getIcon(location, zoom) {
   if (location.foods) {
     return L.icon({ iconUrl: 'image/foods.png', iconSize: [32, 32] });
   } else {
-    return L.icon({ iconUrl: 'image/star.png', iconSize: [32, 32] });
+    return L.icon({ iconUrl: 'image/shopping.png', iconSize: [32, 32] });
   }
 }
 
@@ -91,6 +93,7 @@ function updateMarkers() {
     }
   });
 }
+
 function checkUserLocation() {
   if ("geolocation" in navigator && !initialLocationSet) {
     navigator.geolocation.getCurrentPosition(position => {
@@ -124,9 +127,6 @@ function checkUserLocation() {
   }
 }
 
-
-
-
 function checkCenterLocation() {
   const mapCenter = map.getCenter();
   const iconsContainer = document.getElementById('icons-container');
@@ -151,7 +151,33 @@ function checkCenterLocation() {
   }
 }
 
-
+function getIconsHTML(area) {
+  switch (area) {
+      case 'A':
+          return `
+              <a href="https://www.hamanmachi.com" target="_blank"><img src="image/hama.png" alt="公式ホームページ"></a>
+              <a href="https://www.google.com/search?q=instagram+hama_bura" target="_blank" rel="noreferrer"><img src="image/insta.png" alt="インスタグラム"></a>
+          `;
+      case 'B':
+          return `
+              <a href="https://www.nagasaki-douza.com/" target="_blank"><img src="image/doza.png" alt="公式ホームページ"></a>
+              <a href="https://www.google.com/search?q=%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF+douzagram" target="_blank"><img src="image/insta.png" alt="インスタグラム"></a>
+          `;
+      case 'C':
+          return `
+              <a href="https://shiannbashi-yokocho.com/" target="_blank"><img src="image/sia.png" alt="公式ホームページ"></a>
+              <a href="https://www.google.com/search?q=インスタグラム+shiannbashiyokocho" target="_blank"><img src="image/insta.png" alt="インスタグラム"></a>
+              <a href="https://lin.ee/KOjOjQS" target="_blank"><img src="image/line.png" alt="公式ライン"></a>
+              <a href="https://www.google.com/search?q=Facebook+shiannbashiyokocho" target="_blank"><img src="image/face.png" alt="Facebook"></a>
+          `;
+      case 'D':
+          return `
+              <!-- DエリアのアイコンHTMLを追加 -->
+          `;
+      default:
+          return '';
+  }
+}
 
 function updateBottomPanel() {
   if (map.getZoom() < 17) {
