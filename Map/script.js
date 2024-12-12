@@ -77,7 +77,7 @@ function getIcon(location, zoom) {
   if (location.foods) {
     return L.icon({ iconUrl: 'image/foods.png', iconSize: [32, 32] });
   } else {
-    return L.icon({ iconUrl: 'image/image/star.png', iconSize: [32, 32] });
+    return L.icon({ iconUrl: 'image/star.png', iconSize: [32, 32] });
   }
 }
 
