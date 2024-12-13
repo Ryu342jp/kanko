@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.getElementById('exchangeButton').addEventListener('click', () => {
-    window.location.href = 'https://maps.app.goo.gl/UWgBYGHxAVMwML1Y7';
+    window.location.href = 'https://maps.app.goo.gl/8DBkgaw3wFogqMje7';
   });
 
   initializeStamps();
